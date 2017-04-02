@@ -16,7 +16,7 @@ Tools
 
 * Raspberry Pi (rev B) that I got for free at PyCon years ago.
 
-* An -old- *traditional* wired doordell (powered by a 16V AC 10VA transformer).
+* An ~~old~~ *traditional* wired doordell (powered by a 16V AC 10VA transformer).
 
 * A custom circuit to hook up aforementioned power source to the Raspberry Pi's GPIO   
   pins without frying the Pi (which accepts 3.3V DC).
