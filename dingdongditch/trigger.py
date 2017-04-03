@@ -8,4 +8,7 @@ button = Button(settings.GPIO_INPUT_PIN)
 button.when_pressed = notifier.notify_recipients
 
 def run():
-    signal.pause()
+    try:
+        signal.pause()
+    except KeyboardInterrupt:
+        return
