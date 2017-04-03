@@ -18,8 +18,8 @@ Tools
 
 * An ~~old~~ *traditional* wired doordell (powered by a 16V AC 10VA transformer).
 
-* A custom circuit to hook up aforementioned power source to the Raspberry Pi's GPIO   
-  pins without frying the Pi (which accepts 3.3V DC).
+* A [custom circuit](schematic) to hook up aforementioned power source to the Raspberry
+  Pi's GPIO pins without frying the Pi (which accepts 3.3V DC).
 
 * This Python app.
 
