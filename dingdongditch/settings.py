@@ -13,14 +13,14 @@ logging.basicConfig(
 )
 
 # Twilio REST API credentials
-TWILIO_SID = Env.string('TWILIO_SID')
-TWILIO_TOKEN = Env.string('TWILIO_SECRET_TOKEN')
+TWILIO_SID = Env.string('DDD_TWILIO_SID')
+TWILIO_TOKEN = Env.string('DDD_TWILIO_SECRET_TOKEN')
 
 # "From" phone number associated with the Twilio account
-FROM_NUMBER = Env.string('TWILIO_FROM_NUMBER')
+FROM_NUMBER = Env.string('DDD_FROM_NUMBER')
 
 # Comma-separated list of recipient phone numbers
-RECIPIENTS = [r.strip() for r in Env.string('TWILIO_RECIPIENTS').split(',')]
+RECIPIENTS = [r.strip() for r in Env.string('DDD_RECIPIENTS').split(',')]
 
 # The GPIO input pin number that will pull up when the doorbell is rung
-GPIO_INPUT_PIN = 21
+GPIO_INPUT_PIN = Env.number('DDD_GPIO_INPUT_PIN', 17)
