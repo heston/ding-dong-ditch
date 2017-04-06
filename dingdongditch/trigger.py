@@ -6,7 +6,7 @@ import signal
 import gevent
 from gevent import hub
 from gevent.event import Event
-# from gpiozero import Button
+from gpiozero import Button
 
 from . import notifier, settings
 
