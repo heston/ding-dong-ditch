@@ -17,18 +17,21 @@ def throttle(window):
             'last': None
         }
 
-        logger.debug('function %s throttled at %s', func, window)
+        logger.debug('%s throttled at %s', func, window)
 
         @functools.wraps(func)
         def inner():
             now = datetime.datetime.now()
-            elapsed = now - state['last']
-            if state['last'] is None or elapsed > window:
+            if state['last'] is None or now - state['last'] > window:
                 state['last'] = now
                 logger.debug('throttle executing: %s', func)
                 func()
             else:
-                logger.debug('throttle skipping: %s. Elapsed window: %s', func, elapsed)
+                logger.debug(
+                    'throttle skipping %s. Elapsed window is %s',
+                    func,
+                    now - state['last']
+                )
         return inner
     return wrapper
 
