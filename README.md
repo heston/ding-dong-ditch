@@ -68,6 +68,10 @@ a `systemd` service. This is pretty easy:
 make install
 ```
 
+*Note:* If you cloned this repo into a directory other than `/home/pi/ding-dong-ditch`,
+you'll need to update the `WorkingDirectory` key in `dingdongditch.service` to point
+to that location ~~before~~ running `make install`.
+
 If you decide this is not for you, uninstalling is equally easy:
 
 ```bash

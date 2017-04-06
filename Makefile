@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 .PHONY: setup
 setup:
 	virtualenv venv -p python3
@@ -11,6 +13,7 @@ install:
 	sudo systemctl daemon-reload
 	sudo systemctl enable dingdongditch.service
 	sudo systemctl start dingdongditch
+	sudo systemctl status dingdongditch
 
 .PHONY: uninstall
 uninstall:
