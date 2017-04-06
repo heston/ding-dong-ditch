@@ -3,8 +3,8 @@ import os
 
 from .utils import Env
 
-LOG_PATH = ENV.string('DDD_LOG_PATH', os.path.dirname(__file__))
-LOG_FILE = env.string('DDD_LOG_FILE', 'app.log')
+LOG_PATH = Env.string('DDD_LOG_PATH', os.path.dirname(__file__))
+LOG_FILE = Env.string('DDD_LOG_FILE', 'app.log')
 
 logging.basicConfig(
     format='[%(asctime)s] %(levelname)s %(name)s: %(message)s',
