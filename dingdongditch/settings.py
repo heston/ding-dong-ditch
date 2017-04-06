@@ -3,13 +3,13 @@ import os
 
 from .utils import Env
 
-LOG_PATH = os.path.dirname(__file__)
-LOG_FILE = 'app.log'
+LOG_PATH = ENV.string('DDD_LOG_PATH', os.path.dirname(__file__))
+LOG_FILE = env.string('DDD_LOG_FILE', 'app.log')
 
 logging.basicConfig(
     format='[%(asctime)s] %(levelname)s %(name)s: %(message)s',
     filename=os.path.join(LOG_PATH, LOG_FILE),
-    level=logging.DEBUG
+    level=Env.number('DDD_LOGGING_LEVEL', logging.DEBUG)
 )
 
 # Twilio REST API credentials
