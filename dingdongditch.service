@@ -1,0 +1,11 @@
+[Unit]
+Description=Ding Dong Ditch
+After=multi-user.target
+
+[Service]
+Type=idle
+WorkingDirectory=/home/pi/ding-dong-ditch
+ExecStart=/usr/bin/make run
+
+[Install]
+WantedBy=multi-user.target

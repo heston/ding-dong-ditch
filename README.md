@@ -33,6 +33,47 @@ pin on a Raspberry Pi.
 
 3. Twilio calls a pre-determined set of phone numbers.
 
+
+Installation
+------------
+1. Clone this repo on your Raspberry Pi somewhere. For the purposes of this guide,
+   we'll assume it's `/home/pi/ding-dong-ditch`.
+
+2. Change into the working directory:
+
+   ```bash
+   cd /home/pi/ding-dong-ditch
+   ```
+
+3. Setup the python virtual environment:
+
+   ```bash
+   make setup
+   ```
+
+4. Run the program:
+
+   ```bash
+   make run
+   ```
+
+
+Running on Startup
+------------------
+
+To have this program run upon startup of your Raspberry Pi, you'll need to install
+a `systemd` service. This is pretty easy:
+
+```bash
+make install
+```
+
+If you decide this is not for you, uninstalling is equally easy:
+
+```bash
+make uninstall
+```
+
 Again, Why?
 -----------
 
