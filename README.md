@@ -57,8 +57,8 @@ Installation
     cp env.sh.example env.sh
     ```
 
-    Edit this file to specify the settings you need. Look at `settings.py` for a list
-    of every setting that's available. The settings defined in the example are the
+    Edit this file to specify the settings you need. Look at [`settings.py`](https://github.com/heston/ding-dong-ditch/blob/master/dingdongditch/settings.py)
+    for a list of the available settings. The settings defined in the example are the
     minimum needed to run the program.
 
 4. Run the program:
@@ -81,8 +81,8 @@ make install
 ```
 
 *Note:* If you cloned this repo into a directory other than `/home/pi/ding-dong-ditch`,
-you'll need to update the `WorkingDirectory` key in `dingdongditch.service` to point
-to that location ~~before~~ running `make install`.
+you'll need to update the [`WorkingDirectory` key in `dingdongditch.service`](https://github.com/heston/ding-dong-ditch/blob/master/dingdongditch.service#L7)
+to point to the right location *before* running `make install`.
 
 If you decide this is not for you, uninstalling is equally easy:
 
