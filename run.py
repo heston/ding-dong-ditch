@@ -1,4 +1,4 @@
-from . import trigger
+from dingdongditch import trigger
 
 
 if __name__ == '__main__':
