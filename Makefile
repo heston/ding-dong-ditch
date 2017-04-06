@@ -25,4 +25,5 @@ uninstall:
 .PHONY: run
 run:
 	source venv/bin/activate; \
+	source env.sh; \
 	python run.py

@@ -51,11 +51,23 @@ Installation
    make setup
    ```
 
+4. Create your settings file:
+
+    ```bash
+    cp env.sh.example env.sh
+    ```
+
+    Edit this file to specify the settings you need. Look at `settings.py` for a list
+    of every setting that's available. The settings defined in the example are the
+    minimum needed to run the program.
+
 4. Run the program:
 
    ```bash
    make run
    ```
+
+   To exit, type `ctrl-c`.
 
 
 Running on Startup
