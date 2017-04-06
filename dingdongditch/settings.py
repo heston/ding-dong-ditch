@@ -9,7 +9,7 @@ LOG_FILE = Env.string('DDD_LOG_FILE', 'app.log')
 logging.basicConfig(
     format='[%(asctime)s] %(levelname)s %(name)s: %(message)s',
     filename=os.path.join(LOG_PATH, LOG_FILE),
-    level=Env.number('DDD_LOGGING_LEVEL', logging.DEBUG)
+    level=Env.string('DDD_LOGGING_LEVEL', 'DEBUG')
 )
 
 # Twilio REST API credentials
