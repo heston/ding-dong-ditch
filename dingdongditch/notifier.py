@@ -1,7 +1,6 @@
 import logging
 import urllib.parse
 
-import gevent
 from twilio.rest import TwilioRestClient
 
 from . import settings
@@ -39,8 +38,5 @@ def notify(number):
 
 
 def notify_recipients():
-    greenlets = []
     for recipient in settings.RECIPIENTS:
-        greenlets.append(gevent.spawn(notify, recipient))
-    gevent.wait(greenlets)
-    return greenlets
+        notify(recipient)
