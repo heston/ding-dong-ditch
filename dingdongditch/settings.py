@@ -24,3 +24,6 @@ RECIPIENTS = [r.strip() for r in Env.string('DDD_RECIPIENTS').split(',')]
 
 # The GPIO input pin number that will pull up when the doorbell is rung
 GPIO_INPUT_PIN = Env.number('DDD_GPIO_INPUT_PIN', 17)
+
+# The GPIO output pin that will trigger opening the door/gate
+GPIO_OUTPUT_PIN = Env.number('DDD_GPIO_OUTPUT_PIN', 18)
