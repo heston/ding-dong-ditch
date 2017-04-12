@@ -2,3 +2,4 @@ env.sh
 __pycache__
 app.log
 venv
+node_modules
