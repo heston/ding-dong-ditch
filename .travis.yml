@@ -2,6 +2,6 @@ language: python
 python:
   - "3.6"
 # command to install dependencies
-install: make setup && make setup_test
+install: make setup_ci
 # command to run tests
-script: make test
+script: make test_ci

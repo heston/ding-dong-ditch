@@ -9,6 +9,12 @@ setup:
 .PHONY: setup_test
 setup_test:
 	source venv/bin/activate; \
+	pip install -r requirements.txt; \
+	pip install -r requirements_test.txt
+
+.PHONY: setup_ci
+setup_ci:
+	pip install -r requirements.txt
 	pip install -r requirements_test.txt
 
 .PHONY: install
@@ -36,4 +42,8 @@ run:
 .PHONY: test
 test:
 	source venv/bin/activate; \
+	PYTHONPATH=.:./tests/mocks py.test tests
+
+.PHONY: test_ci
+test_ci:
 	PYTHONPATH=.:./tests/mocks py.test tests
