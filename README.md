@@ -1,6 +1,8 @@
 Ding Dong Ditch
 ===============
 
+[![Build Status](https://travis-ci.org/heston/ding-dong-ditch.svg?branch=master)](https://travis-ci.org/heston/ding-dong-ditch)
+
 Ding Dong Ditch is a project to convert a traditional wired doorbell into a newfangled
 "smart" doorbell, without changing the external appearance of the house.
 
