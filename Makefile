@@ -6,6 +6,11 @@ setup:
 	source venv/bin/activate; \
 	pip install -r requirements.txt
 
+.PHONY: setup_test
+setup_test:
+	source venv/bin/activate; \
+	pip install -r requirements_test.txt
+
 .PHONY: install
 install:
 	sudo cp dingdongditch.service /lib/systemd/system/dingdongditch.service
@@ -27,3 +32,8 @@ run:
 	source venv/bin/activate; \
 	source env.sh; \
 	python run.py
+
+.PHONY: test
+test:
+	source venv/bin/activate; \
+	PYTHONPATH=.:./tests/mocks py.test tests

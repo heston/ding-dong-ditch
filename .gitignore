@@ -3,3 +3,4 @@ __pycache__
 app.log
 venv
 node_modules
+.cache

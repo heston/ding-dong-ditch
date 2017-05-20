@@ -3,9 +3,7 @@ import functools
 import logging
 import signal
 
-from gpiozero import Button
-
-from . import notifier, settings
+from . import action, notifier
 
 WINDOW = datetime.timedelta(seconds=15)
 logger = logging.getLogger(__name__)
@@ -37,18 +35,23 @@ def throttle(window):
 
 
 @throttle(WINDOW)
-def trigger():
-    logger.info('Trigger activated')
-    notifier.notify_recipients()
+def trigger_unit_1():
+    logger.debug('Trigger activated in unit 1')
+    notifier.notify_recipients(action.UNIT_1.id)
 
 
-button = Button(settings.GPIO_INPUT_PIN)
-button.when_pressed = trigger
+@throttle(WINDOW)
+def trigger_unit_2():
+    logger.debug('Trigger activated in unit 2')
+    notifier.notify_recipients(action.UNIT_2.id)
+
+
+action.UNIT_1.buzzer.when_pressed = trigger_unit_1
+action.UNIT_2.buzzer.when_pressed = trigger_unit_2
 
 
 def run():
     logger.info('Up and running')
-    logger.info('Watching GPIO pin: %s', settings.GPIO_INPUT_PIN)
     try:
         signal.wait()
     except KeyboardInterrupt:

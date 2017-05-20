@@ -3,12 +3,12 @@ import urllib.parse
 
 from twilio.rest import TwilioRestClient
 
-from . import settings
+from . import action, system_settings, user_settings
 
 
 logger = logging.getLogger(__name__)
 
-client = TwilioRestClient(settings.TWILIO_SID, settings.TWILIO_TOKEN)
+client = TwilioRestClient(system_settings.TWILIO_SID, system_settings.TWILIO_TOKEN)
 endpoint = 'http://twimlets.com/echo'
 
 twiml = (
@@ -23,11 +23,10 @@ querystring = urllib.parse.urlencode({'Twiml': twiml})
 
 
 def notify(number):
-    logger.debug('Notifying recipient: %s', number)
     try:
         call = client.calls.create(
             to=number,
-            from_=settings.FROM_NUMBER,
+            from_=system_settings.FROM_NUMBER,
             url='{url}?{qs}'.format(url=endpoint, qs=querystring)
         )
     except Exception as e:
@@ -37,6 +36,22 @@ def notify(number):
         return call.sid
 
 
-def notify_recipients():
-    for recipient in settings.RECIPIENTS:
+def notify_recipients(unit_id):
+    sys_unit = system_settings.get_unit_by_id(unit_id)
+    if not sys_unit:
+        logger.warning('Unknown unit id: %s', unit_id)
+        return
+
+    usr_unit = user_settings.get_unit_by_id(unit_id)
+    if not usr_unit:
+        logger.warning('Unit found but not yet configured: %s', unit_id)
+        return
+
+    if usr_unit.should_ring_bell:
+        logger.info('Ringing bell in unit: %s', unit_id)
+        action_unit = action.get_unit_by_id(unit_id)
+        action_unit.bell.ring()
+
+    for recipient in usr_unit.recipients:
+        logger.info('Notifying unit "%s" recipient: %s', unit_id, recipient)
         notify(recipient)
