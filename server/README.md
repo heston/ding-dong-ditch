@@ -32,9 +32,10 @@ This is adapted from the official [Firebase docs](https://firebase.google.com/do
 2. Run `firebase login` to log in via the browser and authenticate the firebase tool.
 3. Go to the Firebase project directory (e.g. `dingdongditch/server`).
 4. Run `firebase init functions` to associate the server with a Firebase project in your account. You will probably want to select `[create a new project]`.
-5. When you are prompted with, `File functions/index.js already exists. Overwrite?`. Select `N` (No).
-6. When you are prompted with, `Do you want to install dependencies with npm now?`. Select `Y` (Yes).
-7. Run this command to deploy the functions:
+5. When you are promped with, `File functions/package.json already exists. Overwrite?`. Select `N` (No).
+6. When you are prompted with, `File functions/index.js already exists. Overwrite?`. Select `N` (No).
+7. When you are prompted with, `Do you want to install dependencies with npm now?`. Select `Y` (Yes).
+8. Run this command to deploy the functions:
 
   ```bash
   $ firebase deploy --only functions
@@ -49,5 +50,5 @@ This is adapted from the official [Firebase docs](https://firebase.google.com/do
   Function URL (handleAction): https://us-central1-YOUR-PROJECT-NAME.cloudfunctions.net/handleAction
   Function URL (unlock): https://us-central1-YOUR-PROJECT-NAME.cloudfunctions.net/unlock
   ```
-8. Grab the URL of the last function (`unlock`) and add it to your `env.sh` file for the
+9. Grab the URL of the last function (`unlock`) and add it to your `env.sh` file for the
   `DDD_FIREBASE_CLOUD_FUNCTION_UNLOCK_URL` key.
