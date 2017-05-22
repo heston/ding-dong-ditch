@@ -1,4 +1,4 @@
 from unittest import mock
 
 
-TwilioRestClient = mock.MagicMock
+Client = mock.MagicMock

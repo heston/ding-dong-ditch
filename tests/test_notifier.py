@@ -5,7 +5,7 @@ def test__notify__success(mocker):
     client_mock = mocker.patch('dingdongditch.notifier.client')
     log_mock = mocker.patch('dingdongditch.notifier.logger')
 
-    result = notifier.notify('+14155551001')
+    result = notifier.notify('1234', '+14155551001')
 
     client_mock.calls.create.assert_called_with(
         to='+14155551001',
@@ -21,7 +21,7 @@ def test__notify__failure(mocker):
     log_mock = mocker.patch('dingdongditch.notifier.logger')
     client_mock.calls.create.side_effect = Exception
 
-    result = notifier.notify('+14155551001')
+    result = notifier.notify('1234', '+14155551001')
 
     assert log_mock.exception.called
     assert result is None
@@ -108,4 +108,4 @@ def test__notify_recipients__should_call_recipients(mocker, settings):
     log_mock.info.assert_called_with(
         'Notifying unit "%s" recipient: %s', '1234', '+14155551001'
     )
-    notify_mock.assert_called_with('+14155551001')
+    notify_mock.assert_called_with('1234', '+14155551001')
