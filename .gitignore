@@ -4,3 +4,4 @@ app.log
 venv
 node_modules
 .cache
+.firebaserc
