@@ -37,7 +37,7 @@ module.exports = class MainMenu extends TwimlResponse {
             );
         }
 
-        gather.pause(1);
+        gather.pause({length: 1});
 
         if (menuOptions.bellEnabled) {
             gather.say(
@@ -48,6 +48,12 @@ module.exports = class MainMenu extends TwimlResponse {
                 'To enable your doorbell chime, press 2.'
             );
         }
+
+        gather.pause({length: 1});
+
+        gather.say(
+            'To open the front gate, press 3.'
+        );
 
         return resp;
     }

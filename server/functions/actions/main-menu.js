@@ -3,19 +3,7 @@ const MainMenu = require('../responses/main-menu');
 const InvalidPin = require('../responses/invalid-pin');
 const { getBaseUrl, getFrom } = require('../lib/request-helpers');
 const { getSettings } = require('../lib/settings');
-
-function validatePin(pin) {
-    if (!pin) {
-        return Promise.reject(new Error('No pin provided'));
-    }
-
-    const name = `systemSettings/units/${pin}`;
-    return admin.database().ref(name).once('value').then(snapshot => {
-        const value = snapshot.val();
-        console.log('validatePin', name, value);
-        return value === 1 ? 1 : Promise.reject(new Error('Unknown pin'));
-    });
-}
+const validatePin = require('../lib/validate-pin');
 
 module.exports = function mainMenu(req, res) {
     // Get the pin from the request
