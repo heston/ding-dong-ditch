@@ -1,4 +1,3 @@
-const admin = require('firebase-admin');
 const MainMenu = require('../responses/main-menu');
 const InvalidPin = require('../responses/invalid-pin');
 const { getBaseUrl, getFrom } = require('../lib/request-helpers');
