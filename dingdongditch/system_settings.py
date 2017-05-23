@@ -60,6 +60,8 @@ def get_unit_by_id(unit_id):
     """
     Return a Unit by its ID.
     """
+    # unit ID should always be a string
+    unit_id = str(unit_id)
     if unit_id == UNIT_1.id:
         return UNIT_1
     elif unit_id == UNIT_2.id:
@@ -72,6 +74,9 @@ USER_SETTINGS_ADAPTER = 'firebase'
 
 # The name of the Firebase app, used to construct the REST URL.
 FIREBASE_APP_NAME = Env.string('DDD_FIREBASE_APP_NAME', 'ding-dong-ditch')
+
+# The URL to the Firebase Cloud Function that handles unlocking the gate
+FIREBASE_CLOUD_FUNCTION_UNLOCK_URL = Env.string('DDD_FIREBASE_CLOUD_FUNCTION_ACTION_URL')
 
 # Path to service account credentials file
 FIREBASE_KEY_PATH = Env.string('DDD_FIREBASE_KEY_PATH', '/usr/local/firebasekey.json')
