@@ -10,7 +10,7 @@ class Strike(DigitalOutputDevice):
     """A class to represent an electronic gate strike."""
     _instances = {}
 
-    def release(duration=3):
+    def release(self, duration=3):
         """Release the strike, thus opening the door/gate it is guarding.
 
         Arguments:
@@ -31,7 +31,7 @@ class Strike(DigitalOutputDevice):
 class Bell(DigitalOutputDevice):
     """A class to represent a doorbell chime."""
 
-    def ring(ding_dong=.5):
+    def ring(self, ding_dong=.5):
         """Ring a doorbell chime with a friendly DING-DONG sound.
 
         Arguments:
