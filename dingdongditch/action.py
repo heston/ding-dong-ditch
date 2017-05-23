@@ -37,7 +37,7 @@ class Bell(DigitalOutputDevice):
         Arguments:
             ding_dong: The duration of the gap between "ding" and "dong", in seconds.
         """
-        super(Bell, self).blink(on_time=duration, off_time=1, n=1, background=True)
+        super(Bell, self).blink(on_time=ding_dong, off_time=1, n=1, background=True)
 
 
 UNIT_1 = Unit(
