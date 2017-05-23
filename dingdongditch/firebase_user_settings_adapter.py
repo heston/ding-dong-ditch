@@ -77,9 +77,15 @@ class FirebaseData(dict):
     def set(self, path, data):
         node = self.get_node_for_path(path)
         if not node.key:
-            node.value.update(data)
+            if data is None:
+                node.value.clear()
+            else:
+                node.value.update(data)
         else:
-            node.parent[node.key] = data
+            if data is None:
+                del node.parent[node.key]
+            else:
+                node.parent[node.key] = data
         signal(path).send(self, value=data)
 
     def merge(self, path, data):

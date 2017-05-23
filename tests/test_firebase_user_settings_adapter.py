@@ -64,6 +64,21 @@ class TestFirebaseData_set:
         data.set('/foo/bar/baz', {'qux': 1})
         assert data == {'foo': {'bar': {'baz': {'qux': 1}}}}
 
+    def test_unset_root(self):
+        data = user_settings.FirebaseData({'foo': {'bar': 1}})
+        data.set('/', None)
+        assert data == {}
+
+    def test_unset_child(self):
+        data = user_settings.FirebaseData({'foo': {'bar': 1}})
+        data.set('/foo/bar', None)
+        assert data == {'foo': {}}
+
+    def test_unset_missing_child(self):
+        data = user_settings.FirebaseData({'foo': {'bar': 1}})
+        data.set('/foo/bar/baz', None)
+        assert data == {'foo': {'bar': {}}}
+
 
 class TestFirebaseData_get:
     def test_get_root(self):
