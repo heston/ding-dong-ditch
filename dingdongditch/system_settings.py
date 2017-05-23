@@ -76,7 +76,7 @@ USER_SETTINGS_ADAPTER = 'firebase'
 FIREBASE_APP_NAME = Env.string('DDD_FIREBASE_APP_NAME', 'ding-dong-ditch')
 
 # The URL to the Firebase Cloud Function that handles unlocking the gate
-FIREBASE_CLOUD_FUNCTION_UNLOCK_URL = Env.string('DDD_FIREBASE_CLOUD_FUNCTION_ACTION_URL')
+FIREBASE_CLOUD_FUNCTION_NOTIFY_URL = Env.string('DDD_FIREBASE_CLOUD_FUNCTION_NOTIFY_URL')
 
 # Path to service account credentials file
 FIREBASE_KEY_PATH = Env.string('DDD_FIREBASE_KEY_PATH', '/usr/local/firebasekey.json')
