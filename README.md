@@ -22,9 +22,9 @@ Tools
 * A [custom circuit](schematic) to hook up aforementioned power source to the Raspberry
   Pi's GPIO pins without frying the Pi (which accepts 3.3V DC).
 
-* [This Python app](tree/master/dingdongditch), running on the Pi.
+* [This Python app](dingdongditch), running on the Pi.
 
-* [This Node JS app](tree/master/server), to power a voice-activated UI.
+* [This Node JS app](server), to power a voice-activated UI.
 
 Approach
 --------
@@ -41,9 +41,9 @@ Installation
 
 There are two parts to getting Ding Dong Ditch running.
 
-1. [Set up the client app](blob/master/dingdongditch/README.md) on your Raspberry Pi.
+1. [Set up the client app](dingdongditch/README.md) on your Raspberry Pi.
 
-2. [Set up the server app](blob/master/server/README.md) with Google Firebase.
+2. [Set up the server app](server/README.md) with Google Firebase.
 
 Again, Why?
 -----------
