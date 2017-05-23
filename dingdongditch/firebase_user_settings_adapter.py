@@ -2,12 +2,14 @@ import atexit
 import collections
 import logging
 
+from blinker import signal
 import pyrebase
 
 from . import system_settings as settings
 
 logger = logging.getLogger(__name__)
 
+NAME = 'firebase'
 DATABASE_URL = 'https://{}.firebaseio.com'.format(settings.FIREBASE_APP_NAME)
 AUTH_DOMAIN = '{}.firebaseapp.com'.format(settings.FIREBASE_APP_NAME)
 STORAGE_BUCKET = '{}.appspot.com'.format(settings.FIREBASE_APP_NAME)
@@ -78,11 +80,13 @@ class FirebaseData(dict):
             node.value.update(data)
         else:
             node.parent[node.key] = data
+        signal(path).send(self, value=data)
 
     def merge(self, path, data):
         node = self.get_node_for_path(path)
         try:
             node.value.update(data)
+            signal(path).send(self, value=data)
         except AttributeError:
             # node is not an updateable type
             raise TypeError(
@@ -140,7 +144,14 @@ def _stream_handler(message):
 
 
 def listen():
-    _streams['user_settings'] = db.child("settings").stream(_stream_handler)
+    _streams['user_settings'] = db.child('settings').stream(_stream_handler)
+
+
+def set_data(path, data):
+    req = {
+        path: data
+    }
+    db.child('settings').update(req)
 
 
 @atexit.register

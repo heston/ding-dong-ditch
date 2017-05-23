@@ -16,28 +16,44 @@ logger = logging.getLogger(__name__)
 Unit = namedtuple('Unit', 'should_ring_bell recipients')
 
 
-def get_data():
+def get_adapter():
     adapter_name = settings.USER_SETTINGS_ADAPTER
     if adapter_name not in ADAPTERS:
         raise ValueError('Unknown adapter: {}'.format(adapter_name))
+    return ADAPTERS[adapter_name]
 
-    logger.info('Getting user settings from adapter "%s"', adapter_name)
+
+def get_data():
+    adapter = get_adapter()
+    logger.info('Getting user settings from adapter "%s"', adapter.NAME)
 
     try:
-        data = ADAPTERS[adapter_name].get_settings()
+        data = adapter.get_settings()
     except Exception as e:
         logger.exception(
-            'Could not load user settings from adapter "%s": %s', adapter_name, e
+            'Could not load user settings from adapter "%s": %s', adapter.NAME, e
         )
         return None
     return data
+
+
+def set_data(key, data):
+    adapter = get_adapter()
+    logger.info('Setting user settings with adapter "%s"', adapter.NAME)
+
+    try:
+        data = adapter.set_data(key, data)
+    except Exception as e:
+        logger.exception(
+            'Could not set user settings with adapter "%s": %s', adapter.NAME, e
+        )
 
 
 def get_unit_by_id(unit_id):
     """
     Return a Unit by its ID.
     """
-    # Keys should always be strings
+    # unit ID should always be a string
     unit_id = str(unit_id)
     data = get_data()
     if data and unit_id in data:

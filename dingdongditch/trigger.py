@@ -3,7 +3,9 @@ import functools
 import logging
 import signal
 
-from . import action, notifier
+from blinker import signal
+
+from . import action, notifier, user_settings
 
 WINDOW = datetime.timedelta(seconds=15)
 logger = logging.getLogger(__name__)
@@ -46,13 +48,35 @@ def trigger_unit_2():
     notifier.notify_recipients(action.UNIT_2.id)
 
 
+def get_strike_setting_path(unit_id):
+    return '{}/strike'.format(unit_id)
+
+
+def handle_gate_strike_unit_1(sender, value=None):
+    if not value:
+        return
+    logger.info('Trigger activated for gate strike in unit 1')
+    action.UNIT_1.strike.release()
+    user_settings.set_data(get_strike_setting_path(action.UNIT_1.id), 0)
+
+
+def handle_gate_strike_unit_2(sender, value=None):
+    if not value:
+        return
+    logger.info('Trigger activated for gate strike in unit 2')
+    action.UNIT_2.strike.release()
+    user_settings.set_data(get_strike_setting_path(action.UNIT_2.id), 0)
+
+
 action.UNIT_1.buzzer.when_pressed = trigger_unit_1
 action.UNIT_2.buzzer.when_pressed = trigger_unit_2
+signal(get_strike_setting_path(action.UNIT_1.id)).connect(handle_gate_strike_unit_1)
+signal(get_strike_setting_path(action.UNIT_2.id)).connect(handle_gate_strike_unit_2)
 
 
 def run():
     logger.info('Up and running')
     try:
-        signal.wait()
+        signal.pause()
     except KeyboardInterrupt:
         logger.info('Shutting down')
