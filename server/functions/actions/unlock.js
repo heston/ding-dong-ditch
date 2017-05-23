@@ -15,7 +15,7 @@ module.exports = function unlock(req, res) {
 
     validatePin(pin).then(() => {
         console.log('unlock triggered');
-        triggerStrike.then((ResponseClass) => {
+        triggerStrike(pin).then((ResponseClass) => {
             res.send((new ResponseClass()).render());
         })
      }, () => {
