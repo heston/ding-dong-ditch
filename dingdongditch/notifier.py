@@ -23,6 +23,7 @@ def get_twiml_response(unit_id):
                     'This is your doorbell calling. Someone is at the door. '
                     'Press any key to unlock the gate. '
                 '</Say>'
+            '</Gather>'
         '</Response>'
     ).format(url=action_url)
 
