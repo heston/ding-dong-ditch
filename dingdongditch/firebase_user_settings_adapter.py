@@ -118,19 +118,16 @@ def get_settings():
 
 def _put_settings_handler(path, data):
     logger.debug('PUT settings: path=%s data=%s', path, data)
-    print('PUT settings: path={} data={}'.format(path, data))
     _cache['user_settings'].set(path, data)
 
 def _patch_settings_handler(path, data):
     logger.debug('PATCH settings: path=%s data=%s', path, data)
-    print('PATCH settings: path={} data={}'.format(path, data))
     try:
         _cache['user_settings'].merge(path, data)
     except TypeError as e:
         logger.warn('Cannot update user settings: %s', e)
 
 def _stream_handler(message):
-    print('STREAM received {}'.format(message))
     logger.debug('STREAM received: %s', message)
     handlers = {
         'put': _put_settings_handler,
