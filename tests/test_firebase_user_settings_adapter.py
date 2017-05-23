@@ -1,3 +1,4 @@
+import blinker
 import pytest
 
 from dingdongditch import firebase_user_settings_adapter as user_settings
@@ -106,3 +107,17 @@ class TestFirebaseData_merge:
         data = user_settings.FirebaseData({'foo': 1})
         with pytest.raises(TypeError):
             data.merge('/foo', {'bar': 1})
+
+
+class TestFirebaseData_pubsub:
+    def test_receive_event(self, mocker):
+        data = user_settings.FirebaseData()
+        listen_mock = mocker.MagicMock()
+
+        def listener(*args, **kwargs):
+            listen_mock(*args, **kwargs)
+
+        blinker.signal('/foo/bar').connect(listener)
+
+        data.set('/foo/bar', 2)
+        listen_mock.assert_called_with(data, value=2)
