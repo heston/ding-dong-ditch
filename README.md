@@ -9,9 +9,8 @@ Ding Dong Ditch is a project to convert a traditional wired doorbell into a newf
 Why?
 ----
 
-Whenever someone rings my doorbell, a 16V AV circuit is connected, which powers an
-electromagnet inside the doorbell chime. The chime prompts my dog to bark wildly, and
-without fail, wakes my sleeping baby. This simply will not do.
+Whenever someone rings my doorbell, a 16V AV circuit is connected, which powers a
+solenoid that strikes a metal bar to produce a loud "DING DONG" inside my home. The chime prompts my dog to bark wildly, and wakes my sleeping baby. This simply will not do.
 
 Tools
 -----
@@ -23,7 +22,9 @@ Tools
 * A [custom circuit](schematic) to hook up aforementioned power source to the Raspberry
   Pi's GPIO pins without frying the Pi (which accepts 3.3V DC).
 
-* This Python app.
+* [This Python app](tree/master/dingdongditch), running on the Pi.
+
+* [This Node JS app](tree/master/server), to power a voice-activated UI.
 
 Approach
 --------
@@ -33,64 +34,16 @@ pin on a Raspberry Pi.
 
 2. When the pin "pulls up," this fires off a request to Twilio.
 
-3. Twilio calls a pre-determined set of phone numbers.
-
+3. Twilio calls a user-defined set of phone numbers.
 
 Installation
 ------------
-1. Clone this repo on your Raspberry Pi somewhere. For the purposes of this guide,
-   we'll assume it's `/home/pi/ding-dong-ditch`.
 
-2. Change into the working directory:
+There are two parts to getting Ding Dong Ditch running.
 
-   ```bash
-   cd /home/pi/ding-dong-ditch
-   ```
+1. [Set up the client app](blob/master/dingdongditch/README.md) on your Raspberry Pi.
 
-3. Setup the python virtual environment:
-
-   ```bash
-   make setup
-   ```
-
-4. Create your settings file:
-
-    ```bash
-    cp env.sh.example env.sh
-    ```
-
-    Edit this file to specify the settings you need. Look at [`settings.py`](https://github.com/heston/ding-dong-ditch/blob/master/dingdongditch/settings.py)
-    for a list of the available settings. The settings defined in the example are the
-    minimum needed to run the program.
-
-4. Run the program:
-
-   ```bash
-   make run
-   ```
-
-   To exit, type `ctrl-c`.
-
-
-Running on Startup
-------------------
-
-To have this program run upon startup of your Raspberry Pi, you'll need to install
-a `systemd` service. This is pretty easy:
-
-```bash
-make install
-```
-
-*Note:* If you cloned this repo into a directory other than `/home/pi/ding-dong-ditch`,
-you'll need to update the [`WorkingDirectory` key in `dingdongditch.service`](https://github.com/heston/ding-dong-ditch/blob/master/dingdongditch.service#L7)
-to point to the right location *before* running `make install`.
-
-If you decide this is not for you, uninstalling is equally easy:
-
-```bash
-make uninstall
-```
+2. [Set up the server app](blob/master/server/README.md) with Google Firebase.
 
 Again, Why?
 -----------
@@ -98,8 +51,8 @@ Again, Why?
 Sure, I could spend $200 on a fancy, Internet-of-things
 [connected doorbell](https://ring.com/). But, I don't really need that:
 
-1. We already have a doorbell built into our front gate. It matches the upstairs
-  neighbors' doorbell, it's simple, and it looks fine.
+1. We already have a doorbell built into our front gate. It matches the rest of the
+  building, it's simple, and it looks fine.
 
 2. I have a Raspberry Pi collecting dust. Even if I didn't, one can be had for ~$30.
 
