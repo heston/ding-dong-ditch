@@ -1,8 +1,8 @@
 Ding Dong Ditch Client
 ======================
 
-The client runs on your Raspberry Pi. It handles interfacing with the exisitng hardware,
-including the doorbell, mechanical chime, and door/gate stike, if present.
+The client runs on your Raspberry Pi. It handles interfacing with the exisiting hardware,
+including the doorbell, mechanical chime, and door/gate strike, if present.
 
 Installation
 ------------
