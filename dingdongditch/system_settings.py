@@ -78,7 +78,7 @@ USER_SETTINGS_ADAPTER = 'firebase'
 # The name of the Firebase app, used to construct the REST URL.
 FIREBASE_APP_NAME = Env.string('DDD_FIREBASE_APP_NAME', 'ding-dong-ditch')
 
-# The URL to the Firebase Cloud Function that handles unlocking the gate
+# The URL to the Firebase Cloud Function that initiates the voice doorbell.
 FIREBASE_CLOUD_FUNCTION_NOTIFY_URL = Env.string('DDD_FIREBASE_CLOUD_FUNCTION_NOTIFY_URL')
 
 # Path to service account credentials file

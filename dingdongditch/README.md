@@ -35,11 +35,29 @@ Installation
     cp env.sh.example env.sh
     ```
 
-    Edit this file to specify the settings you need. Look at [`settings.py`](https://github.com/heston/ding-dong-ditch/blob/master/dingdongditch/settings.py)
-    for a list of the available settings. The settings defined in the example are the
-    minimum needed to run the program.
+    Edit this file to specify the settings you need. Look at [`system_settings.py`](https://github.com/heston/ding-dong-ditch/blob/master/dingdongditch/system_settings.py) for more detailed descriptions.
 
-4. Run the program:
+4. Set up your Firebase credentials. This allows the client to communicate with the server.
+
+    1. Ensure your [server is set up](../server/README.md).
+
+    2. Log in to the [Firebase console](https://console.firebase.google.com) and select your project.
+
+    3. Click settings (the gear menu next to the "Overview" tab).
+
+    4. Copy your "Project ID" and set it to the `DDD_FIREBASE_APP_NAME` variable in `env.sh`.
+
+    5. Copy the "Web API Key" and set it to the `DDD_FIREBASE_API_KEY` variable in `env.sh`.
+
+    6. Click on "Service Accounts" in the tab bar.
+
+    7. Click "Generate New Private Key" and save the file somewhere.
+
+    8. Copy the key file to your Raspberry Pi (scp, rsync, whatever). The default location is `/home/pi/.firebasekey`.
+
+    9. Ensure the `DDD_FIREBASE_KEY_PATH` variable in `env.sh` points to the file.
+
+5. Run the client:
 
    ```bash
    make run

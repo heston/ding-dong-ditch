@@ -51,13 +51,13 @@ This is adapted from the official [Firebase docs](https://firebase.google.com/do
 
     ```
     Project Console: https://console.firebase.google.com/project/YOUR-PROJECT-NAME/overview
+    Function URL (doorbell): https://us-central1-YOUR-PROJECT-NAME.cloudfunctions.net/doorbell
     Function URL (greeting): https://us-central1-YOUR-PROJECT-NAME.cloudfunctions.net/greeting
     Function URL (mainMenu): https://us-central1-YOUR-PROJECT-NAME.cloudfunctions.net/mainMenu
     Function URL (handleAction): https://us-central1-YOUR-PROJECT-NAME.cloudfunctions.net/handleAction
     Function URL (unlock): https://us-central1-YOUR-PROJECT-NAME.cloudfunctions.net/unlock
     ```
 
-9. Grab the URL of the last function (`unlock`) and add it to your `env.sh` file for the
-  `DDD_FIREBASE_CLOUD_FUNCTION_UNLOCK_URL` key.
+9. Grab the URL of the first function (`doorbell`) and set it to the `DDD_FIREBASE_CLOUD_FUNCTION_NOTIFY_URL` key in your `env.sh` file.
 
 10. You're done! Enjoy a frosty :beer: for your efforts.
