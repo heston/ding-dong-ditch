@@ -4,6 +4,14 @@ Ding Dong Ditch Client
 The client runs on your Raspberry Pi. It handles interfacing with the exisiting hardware,
 including the doorbell, mechanical chime, and door/gate strike, if present.
 
+Prerequisites
+--------------
+* This has only been tested on Python 3.6. At the time of writing, this is [a pain to install](http://bohdan-danishevsky.blogspot.com/2017/01/building-python-360-on-raspberry-pi-3.html).
+
+* This has only been tested on a Raspberry Pi B (yeah, pretty old).
+
+* This has only been tested on the OS `Raspbian GNU/Linux 8 (jessie)`.
+
 Installation
 ------------
 1. Clone this repo on your Raspberry Pi somewhere. For the purposes of this guide,
