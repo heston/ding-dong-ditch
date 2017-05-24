@@ -151,9 +151,9 @@ def listen():
     _streams['user_settings'] = db.child('settings').stream(_stream_handler)
 
 
-def set_data(path, data):
+def set_data(path, data, root='settings'):
     path_list = _get_path_list(path)
-    child = db.child('settings')
+    child = db.child(root)
     for path_part in path_list:
         child = child.child(path_part)
     child.set(data)

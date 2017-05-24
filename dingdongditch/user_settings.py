@@ -37,16 +37,25 @@ def get_data():
     return data
 
 
-def set_data(key, data):
+def set_data(key, data, root='settings'):
     adapter = get_adapter()
     logger.info('Setting user settings with adapter "%s"', adapter.NAME)
 
     try:
-        data = adapter.set_data(key, data)
+        data = adapter.set_data(key, data, root)
     except Exception as e:
         logger.exception(
             'Could not set user settings with adapter "%s": %s', adapter.NAME, e
         )
+
+
+def init_data():
+    data = {
+        settings.UNIT_1.id: 1,
+        settings.UNIT_2.id: 1,
+    }
+    set_data('units', data, 'systemSettings')
+    return get_data()
 
 
 def get_unit_by_id(unit_id):
