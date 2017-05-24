@@ -105,23 +105,28 @@ class TestFirebaseData_get:
 class TestFirebaseData_merge:
     def test_merge_root(self):
         data = user_settings.FirebaseData()
-        data.merge('/', {'foo': 1})
-        assert data == {'foo': 1}
+        data.merge('/', {'foo/bar': 1})
+        assert data == {'foo': {'bar': 1}}
 
     def test_merge_missing(self):
         data = user_settings.FirebaseData()
         data.merge('/foo', {'bar': 1})
         assert data == {'foo': {'bar': 1}}
 
-    def test_merge_child(self):
+    def test_merge_simple_child(self):
         data = user_settings.FirebaseData({'foo': {'bar': 1}})
         data.merge('/foo', {'baz': 1})
         assert data == {'foo': {'bar': 1, 'baz': 1}}
 
-    def test_cannot_merge_different_type(self):
-        data = user_settings.FirebaseData({'foo': 1})
-        with pytest.raises(TypeError):
-            data.merge('/foo', {'bar': 1})
+    def test_merge_nested_child(self):
+        data = user_settings.FirebaseData({'foo': {'bar': 1}})
+        data.merge('/', {'foo/baz': 1})
+        assert data == {'foo': {'bar': 1, 'baz': 1}}
+
+    def test_merge_nested_child_overwrite(self):
+        data = user_settings.FirebaseData({'foo': {'bar': 1}})
+        data.merge('/', {'foo/bar/baz': 1})
+        assert data == {'foo': {'bar': {'baz': 1}}}
 
 
 class TestFirebaseData_pubsub:
@@ -136,3 +141,84 @@ class TestFirebaseData_pubsub:
 
         data.set('/foo/bar', 2)
         listen_mock.assert_called_with(data, value=2)
+
+
+class Test_get_settings:
+    def test_cold_cache(self, mocker):
+        listen_mock = mocker.patch('dingdongditch.firebase_user_settings_adapter.listen')
+
+        result = user_settings.get_settings()
+
+        assert 'user_settings' in user_settings._cache
+        assert listen_mock.called
+        assert isinstance(result, user_settings.FirebaseData)
+
+    def test_warm_cache(self, mocker):
+        mock_settings = {}
+        user_settings._cache['user_settings'] = mock_settings
+
+        result = user_settings.get_settings()
+
+        assert result is mock_settings
+
+
+def test_put_settings_handler(mocker):
+    mock_settings = mocker.MagicMock()
+    user_settings._cache['user_settings'] = mock_settings
+
+    path = '/foo/bar'
+    data = 1
+    user_settings._put_settings_handler(path, data)
+
+    mock_settings.set.assert_called_with(path, data)
+
+
+def test_patch_settings_handler(mocker):
+    mock_settings = mocker.MagicMock()
+    user_settings._cache['user_settings'] = mock_settings
+
+    path = '/'
+    data = {'foo/bar': 1}
+    user_settings._patch_settings_handler(path, data)
+
+    mock_settings.merge.assert_called_with(path, data)
+
+
+def test_stream_handler__put(mocker):
+    put_handler_mock = mocker.patch(
+        'dingdongditch.firebase_user_settings_adapter._put_settings_handler'
+    )
+
+    message = {
+        'data': {
+            '1': {
+                'strike': 0,
+                'chime': 0,
+                'recipients': {
+                    '+14155551000': 1
+                }
+            }
+        },
+        'event': 'put',
+        'path': '/'
+    }
+    user_settings._stream_handler(message)
+
+    put_handler_mock.assert_called_with(message['path'], message['data'])
+
+
+def test_stream_handler__patch(mocker):
+    patch_handler_mock = mocker.patch(
+        'dingdongditch.firebase_user_settings_adapter._patch_settings_handler'
+    )
+
+    message = {
+        'data': {
+            '1/strike': 0
+        },
+        'event': 'patch',
+        'path': '/'
+    }
+    user_settings._stream_handler(message)
+
+    patch_handler_mock.assert_called_with(message['path'], message['data'])

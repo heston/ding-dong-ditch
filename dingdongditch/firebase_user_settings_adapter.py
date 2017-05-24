@@ -89,16 +89,9 @@ class FirebaseData(dict):
         signal(path).send(self, value=data)
 
     def merge(self, path, data):
-        node = self.get_node_for_path(path)
-        try:
-            node.value.update(data)
-            signal(path).send(self, value=data)
-        except AttributeError:
-            # node is not an updateable type
-            raise TypeError(
-                'Cannot update path {}. '
-                'Existing path points to: {}'.format(path, node.value)
-            )
+        for rel_path, value in data.items():
+            full_path = '{}/{}'.format(path, rel_path)
+            self.set(full_path, value)
 
     def get(self, path):
         parts = _get_path_list(path)
@@ -123,22 +116,20 @@ def get_settings():
 
 
 def _put_settings_handler(path, data):
+    settings = get_settings()
     logger.debug('PUT settings: path=%s data=%s', path, data)
-    _cache['user_settings'].set(path, data)
+    settings.set(path, data)
 
 def _patch_settings_handler(path, data):
     logger.debug('PATCH settings: path=%s data=%s', path, data)
-    try:
-        _cache['user_settings'].merge(path, data)
-    except TypeError as e:
-        logger.warn('Cannot update user settings: %s', e)
+    settings = get_settings()
+    settings.merge(path, data)
 
 def _stream_handler(message):
     logger.debug('STREAM received: %s', message)
     handlers = {
         'put': _put_settings_handler,
-        # TODO: make this work properly
-        # 'patch': _patch_settings_handler,
+        'patch': _patch_settings_handler,
     }
     handler = handlers.get(message['event'])
     if handler:

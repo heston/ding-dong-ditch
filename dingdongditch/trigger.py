@@ -3,7 +3,7 @@ import functools
 import logging
 import signal
 
-from blinker import signal
+import blinker
 
 from . import action, notifier, user_settings
 
@@ -70,8 +70,12 @@ def handle_gate_strike_unit_2(sender, value=None):
 
 action.UNIT_1.buzzer.when_pressed = trigger_unit_1
 action.UNIT_2.buzzer.when_pressed = trigger_unit_2
-signal(get_strike_setting_path(action.UNIT_1.id)).connect(handle_gate_strike_unit_1)
-signal(get_strike_setting_path(action.UNIT_2.id)).connect(handle_gate_strike_unit_2)
+blinker.signal(
+    get_strike_setting_path(action.UNIT_1.id)
+).connect(handle_gate_strike_unit_1)
+blinker.signal(
+    get_strike_setting_path(action.UNIT_2.id)
+).connect(handle_gate_strike_unit_2)
 
 
 def run():
