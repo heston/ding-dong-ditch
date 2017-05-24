@@ -1,7 +1,7 @@
 *.pyc
 env.sh
 __pycache__
-app.log
+ding-dong-ditch.log
 venv
 node_modules
 .cache

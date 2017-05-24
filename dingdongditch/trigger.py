@@ -68,14 +68,18 @@ def handle_gate_strike_unit_2(sender, value=None):
     user_settings.set_data(get_strike_setting_path(action.UNIT_2.id), 0)
 
 
-action.UNIT_1.buzzer.when_pressed = trigger_unit_1
-action.UNIT_2.buzzer.when_pressed = trigger_unit_2
-blinker.signal(
-    get_strike_setting_path(action.UNIT_1.id)
-).connect(handle_gate_strike_unit_1)
-blinker.signal(
-    get_strike_setting_path(action.UNIT_2.id)
-).connect(handle_gate_strike_unit_2)
+if action.UNIT_1:
+    action.UNIT_1.buzzer.when_pressed = trigger_unit_1
+    blinker.signal(
+        get_strike_setting_path(action.UNIT_1.id)
+    ).connect(handle_gate_strike_unit_1)
+
+
+if action.UNIT_2:
+    action.UNIT_2.buzzer.when_pressed = trigger_unit_2
+    blinker.signal(
+        get_strike_setting_path(action.UNIT_2.id)
+    ).connect(handle_gate_strike_unit_2)
 
 
 def run():

@@ -40,19 +40,23 @@ class Bell(DigitalOutputDevice):
         super(Bell, self).blink(on_time=ding_dong, off_time=1, n=1, background=True)
 
 
-UNIT_1 = Unit(
-    id=settings.UNIT_1.id,
-    buzzer=Button(settings.UNIT_1.buzzer),
-    bell=Bell(settings.UNIT_1.bell),
-    strike=Strike.get(settings.UNIT_1.strike)
-)
+UNIT_1 = UNIT_2 = None
 
-UNIT_2 = Unit(
-    id=settings.UNIT_2.id,
-    buzzer=Button(settings.UNIT_2.buzzer),
-    bell=Bell(settings.UNIT_2.bell),
-    strike=Strike.get(settings.UNIT_2.strike)
-)
+if settings.UNIT_1.id:
+    UNIT_1 = Unit(
+        id=settings.UNIT_1.id,
+        buzzer=Button(settings.UNIT_1.buzzer),
+        bell=Bell(settings.UNIT_1.bell),
+        strike=Strike.get(settings.UNIT_1.strike)
+    )
+
+if settings.UNIT_2.id:
+    UNIT_2 = Unit(
+        id=settings.UNIT_2.id,
+        buzzer=Button(settings.UNIT_2.buzzer),
+        bell=Bell(settings.UNIT_2.bell),
+        strike=Strike.get(settings.UNIT_2.strike)
+    )
 
 
 def get_unit_by_id(unit_id):
