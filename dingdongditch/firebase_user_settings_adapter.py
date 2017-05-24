@@ -29,18 +29,18 @@ _cache = {}
 
 Node = collections.namedtuple('Node', 'value parent key')
 
+def _get_path_list(path):
+    path = path.strip('/')
+
+    if path == '':
+        return []
+
+    return path.split('/')
+
 
 class FirebaseData(dict):
-    def _get_path_list(self, path):
-        path = path.strip('/')
-
-        if path == '':
-            return []
-
-        return path.split('/')
-
     def get_node_for_path(self, path):
-        keys = self._get_path_list(path)
+        keys = _get_path_list(path)
         node = self
         p_node = self
         p_key = None
@@ -101,7 +101,7 @@ class FirebaseData(dict):
             )
 
     def get(self, path):
-        parts = self._get_path_list(path)
+        parts = _get_path_list(path)
         node = self
         for part in parts:
             try:
@@ -137,7 +137,8 @@ def _stream_handler(message):
     logger.debug('STREAM received: %s', message)
     handlers = {
         'put': _put_settings_handler,
-        'patch': _patch_settings_handler,
+        # TODO: make this work properly
+        # 'patch': _patch_settings_handler,
     }
     handler = handlers.get(message['event'])
     if handler:
@@ -151,10 +152,11 @@ def listen():
 
 
 def set_data(path, data):
-    req = {
-        path: data
-    }
-    db.child('settings').update(req)
+    path_list = _get_path_list(path)
+    child = db.child('settings')
+    for path_part in path_list:
+        child = child.child(path_part)
+    child.set(data)
 
 
 @atexit.register

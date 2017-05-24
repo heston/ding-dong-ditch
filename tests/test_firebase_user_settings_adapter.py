@@ -3,25 +3,25 @@ import pytest
 
 from dingdongditch import firebase_user_settings_adapter as user_settings
 
-class TestFirebaseData__get_path_list:
+class Test_get_path_list:
     def test_no_path(self):
         data = user_settings.FirebaseData()
-        result = data._get_path_list('')
+        result = user_settings._get_path_list('')
         assert result == []
 
     def test_root_path(self):
         data = user_settings.FirebaseData()
-        result = data._get_path_list('/')
+        result = user_settings._get_path_list('/')
         assert result == []
 
     def test_absolute_child_path(self):
         data = user_settings.FirebaseData()
-        result = data._get_path_list('/foo/bar')
+        result = user_settings._get_path_list('/foo/bar')
         assert result == ['foo', 'bar']
 
     def test_relative_child_path(self):
         data = user_settings.FirebaseData()
-        result = data._get_path_list('foo/bar')
+        result = user_settings._get_path_list('foo/bar')
         assert result == ['foo', 'bar']
 
 
