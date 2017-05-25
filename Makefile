@@ -12,11 +12,15 @@ setup_test:
 	source venv/bin/activate; \
 	pip install -r requirements.txt; \
 	pip install -r requirements_test.txt
+	cd server/functions; \
+	npm install
 
 .PHONY: setup_ci
 setup_ci:
 	pip install -r requirements.txt
 	pip install -r requirements_test.txt
+	cd server/functions; \
+	npm install
 
 .PHONY: install
 install:
