@@ -12,12 +12,13 @@ from .utils import Env
 
 # Options are: file, stdout
 LOG_METHOD = Env.string('DDD_LOG_METHOD', 'stdout')
+LOG_LEVEL = Env.string('DDD_LOGGING_LEVEL', 'INFO')
 LOG_PATH = Env.string('DDD_LOG_PATH', os.path.dirname(__file__))
 LOG_FILE = Env.string('DDD_LOG_FILE', 'ding-dong-ditch.log')
 
 basicConfig_args = dict(
     format='[%(asctime)s] %(levelname)s %(name)s: %(message)s',
-    level=Env.string('DDD_LOGGING_LEVEL', 'INFO')
+    level=LOG_LEVEL
 )
 
 if LOG_METHOD == 'file':
@@ -28,6 +29,14 @@ else:
     raise ValueError('Unknown value for LOG_METHOD: {}'.format(LOG_METHOD))
 
 logging.basicConfig(**basicConfig_args)
+
+if LOG_LEVEL is not 'DEBUG':
+    # Configure some sub-loggers to be quieter, unless the global level is DEBUG
+    connectionpool_logger = logging.getLogger('requests.packages.urllib3.connectionpool')
+    connectionpool_logger.setLevel(logging.WARNING)
+
+    oauth_logger = logging.getLogger('oauth2client.client')
+    oauth_logger.setLevel(logging.WARNING)
 
 
 ##
