@@ -1,6 +1,7 @@
 from collections import namedtuple
 import logging
 import os
+import sys
 
 from .utils import Env
 
@@ -9,14 +10,24 @@ from .utils import Env
 ## Logging
 ##
 
+# Options are: file, stdout
+LOG_METHOD = Env.string('DDD_LOG_METHOD', 'stdout')
 LOG_PATH = Env.string('DDD_LOG_PATH', os.path.dirname(__file__))
 LOG_FILE = Env.string('DDD_LOG_FILE', 'ding-dong-ditch.log')
 
-logging.basicConfig(
+basicConfig_args = dict(
     format='[%(asctime)s] %(levelname)s %(name)s: %(message)s',
-    filename=os.path.join(LOG_PATH, LOG_FILE),
     level=Env.string('DDD_LOGGING_LEVEL', 'INFO')
 )
+
+if LOG_METHOD == 'file':
+    basicConfig_args['filename'] = os.path.join(LOG_PATH, LOG_FILE)
+elif LOG_METHOD == 'stdout':
+    basicConfig_args['stream'] = sys.stdout
+else:
+    raise ValueError('Unknown value for LOG_METHOD: {}'.format(LOG_METHOD))
+
+logging.basicConfig(**basicConfig_args)
 
 
 ##
