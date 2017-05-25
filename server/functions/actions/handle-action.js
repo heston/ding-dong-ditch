@@ -1,4 +1,5 @@
 const BadRequest = require('../responses/bad-request');
+const InvalidOption = require('../responses/invalid-option');
 const Success = require('../responses/success');
 const { getBaseUrl, getFrom } = require('../lib/request-helpers');
 const togglePhone = require('../activities/toggle-phone');
