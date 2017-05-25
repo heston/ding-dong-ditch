@@ -8,5 +8,16 @@
     "twilio": "^3.0.0",
     "url-search-params": "^0.8.0"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "jest": "^20.0.4"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "modulePaths": [
+        "<rootDir>"
+    ]
+  }
 }

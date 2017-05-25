@@ -5,3 +5,11 @@ python:
 install: make setup_ci
 # command to run tests
 script: make test_ci
+env:
+  # The Node version should match what is running in Firebase.
+  # This value was determined empirically by executing the following
+  # command inside a Cloudfunction:
+  #     console.log('NodeJS version', process.versions.node);
+  - NODE_VERSION="6.9.1"
+before_install:
+  - nvm install $NODE_VERSION

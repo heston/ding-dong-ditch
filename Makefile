@@ -40,11 +40,19 @@ run:
 	source env.sh; \
 	python run.py
 
-.PHONY: test
-test:
+.PHONY: test_client
+test_client:
 	source venv/bin/activate; \
 	PYTHONPATH=.:./tests/mocks py.test tests
 
+.PHONY: test_server
+test_server:
+	cd server/functions; \
+	npm test
+
+.PHONY: test
+test: test_server test_client
+
 .PHONY: test_ci
-test_ci:
+test_ci: test_server
 	PYTHONPATH=.:./tests/mocks py.test tests

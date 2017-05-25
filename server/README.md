@@ -10,8 +10,7 @@ The term "Server" is a bit of a misnomer. It is actually a collection of Firebas
 Cloud Functions that interact with the Firebase Realtime Database. The Raspberry Pi
 sets up a streaming connection to the database, and gets notified when data changes.
 
-The functions a very simple, and will run on the free tier ("Spark" in Google parlance)
-of Firebase.
+The server will run on the free tier ("Spark" in Google parlance) of Firebase.
 
 Set up
 ------
@@ -47,7 +46,7 @@ This is adapted from the official [Firebase docs](https://firebase.google.com/do
     $ firebase deploy --only functions
     ```
 
-    After you deploy, the Firebase CLI outputs the URL for the HTTP function endpoints. In your terminal, you should see output like the following:
+    After you deploy, the Firebase CLI outputs the URLs for the HTTP function endpoints. In your terminal, you should see output like the following:
 
     ```
     Project Console: https://console.firebase.google.com/project/YOUR-PROJECT-NAME/overview
