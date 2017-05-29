@@ -10,7 +10,7 @@ module.exports = class StrikeTriggered extends TwimlResponse {
     getTwiml() {
         const resp = super.getTwiml();
 
-        resp.say('Your gate will open momentarily.');
+        resp.say('Your gate is opening.');
         resp.pause({length: 1});
 
         if (this.pin && this.action) {
