@@ -49,12 +49,27 @@ def set_data(key, data, root='settings'):
         )
 
 
-def init_data():
+def init_system_data():
     data = {
         settings.UNIT_1.id: 1,
-        settings.UNIT_2.id: 1,
     }
+    if settings.UNIT_2.id:
+        data[settings.UNIT_2.id] = 1
     set_data('units', data, 'systemSettings')
+
+
+def init_user_data():
+    path = '{}/chime'.format(settings.UNIT_1.id)
+    set_data(path, 0)
+
+    if settings.UNIT_2.id:
+        path = '{}/chime'.format(settings.UNIT_2.id)
+        set_data(path, 0)
+
+
+def init_data():
+    init_system_data()
+    init_user_data()
     return get_data()
 
 
@@ -68,7 +83,7 @@ def get_unit_by_id(unit_id):
     if data and unit_id in data:
         unit_data = data[unit_id]
         should_ring_bell = unit_data.get('chime', 1)
-        recipients = list(unit_data.get('recipients', {}).keys())
+        recipients = list((unit_data.get('recipients') or {}).keys())
         return Unit(
             should_ring_bell=should_ring_bell,
             recipients=recipients
