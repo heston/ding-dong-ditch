@@ -8,7 +8,6 @@ module.exports = function validatePin(pin) {
     const name = `systemSettings/units/${pin}`;
     return admin.database().ref(name).once('value').then(snapshot => {
         const value = snapshot.val();
-        console.log('validatePin', name, value);
         return value === 1 ? 1 : Promise.reject(new Error('Unknown pin'));
     });
 }
