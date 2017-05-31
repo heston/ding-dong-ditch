@@ -97,7 +97,7 @@ def test_init_user_data__single_unit(mocker, settings, set_data):
 
     user_settings.init_user_data()
 
-    set_data.assert_called_with('1111/chime', 0)
+    set_data.assert_called_with('1111/strike', 0)
 
 
 def test_init_user_data__dual_units(mocker, settings, set_data):
@@ -109,8 +109,8 @@ def test_init_user_data__dual_units(mocker, settings, set_data):
     user_settings.init_user_data()
 
     set_data.assert_has_calls([
-        mocker.call('1111/chime', 0),
-        mocker.call('2222/chime', 0)
+        mocker.call('1111/strike', 0),
+        mocker.call('2222/strike', 0)
     ])
 
 

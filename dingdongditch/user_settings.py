@@ -59,11 +59,11 @@ def init_system_data():
 
 
 def init_user_data():
-    path = '{}/chime'.format(settings.UNIT_1.id)
+    path = '{}/strike'.format(settings.UNIT_1.id)
     set_data(path, 0)
 
     if settings.UNIT_2.id:
-        path = '{}/chime'.format(settings.UNIT_2.id)
+        path = '{}/strike'.format(settings.UNIT_2.id)
         set_data(path, 0)
 
 
