@@ -6,8 +6,6 @@ module.exports = function doorbell(req, res) {
 
     res.status(200).type('xml');
 
-    console.log('doorbell', req.query);
-
     const resp = new Doorbell(
         getBaseUrl(req),
         pin
