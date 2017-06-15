@@ -55,6 +55,13 @@ FROM_NUMBER = Env.string('DDD_FROM_NUMBER')
 ## Hardware Interface
 ##
 
+# The throttle rate of the doorbell trigger, in seconds.
+BUZZER_INTERVAL = Env.number('DDD_BUZZER_INTERVAL', 15)
+
+# The time (in seconds) to wait after the buzzer is pushed to notify recipients.
+BUZZER_HOLD = Env.number('DDD_BUZZER_HOLD', 0.2)
+
+
 ##
 ## Unit 1
 ##

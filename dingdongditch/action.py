@@ -45,7 +45,7 @@ UNIT_1 = UNIT_2 = None
 if settings.UNIT_1.id:
     UNIT_1 = Unit(
         id=settings.UNIT_1.id,
-        buzzer=Button(settings.UNIT_1.buzzer),
+        buzzer=Button(pin=settings.UNIT_1.buzzer, hold_time=settings.BUZZER_HOLD),
         bell=Bell(settings.UNIT_1.bell),
         strike=Strike.get(settings.UNIT_1.strike)
     )
@@ -53,7 +53,7 @@ if settings.UNIT_1.id:
 if settings.UNIT_2.id:
     UNIT_2 = Unit(
         id=settings.UNIT_2.id,
-        buzzer=Button(settings.UNIT_2.buzzer),
+        buzzer=Button(pin=settings.UNIT_2.buzzer, hold_time=settings.BUZZER_HOLD),
         bell=Bell(settings.UNIT_2.bell),
         strike=Strike.get(settings.UNIT_2.strike)
     )
