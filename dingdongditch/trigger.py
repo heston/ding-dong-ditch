@@ -78,7 +78,7 @@ if action.UNIT_1:
 
 if action.UNIT_2:
     action.UNIT_2.buzzer.when_held = trigger_unit_2
-    action.UNIT_1.buzzer.when_pressed = lambda: logger.debug('Trigger pressed for unit 2')
+    action.UNIT_2.buzzer.when_pressed = lambda: logger.debug('Trigger pressed for unit 2')
     blinker.signal(
         get_strike_setting_path(action.UNIT_2.id)
     ).connect(handle_gate_strike_unit_2)
