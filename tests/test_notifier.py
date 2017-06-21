@@ -10,7 +10,8 @@ def test__notify__success(mocker):
     client_mock.calls.create.assert_called_with(
         to='+14155551001',
         from_=system_settings.FROM_NUMBER,
-        url=mocker.ANY
+        url=mocker.ANY,
+        if_machine='Hangup'
     )
     assert result is client_mock.calls.create.return_value.sid
     assert log_mock.info.called
