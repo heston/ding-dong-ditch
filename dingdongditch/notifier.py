@@ -22,7 +22,8 @@ def notify(unit_id, number):
         call = client.calls.create(
             to=number,
             from_=system_settings.FROM_NUMBER,
-            url=get_twiml_url(unit_id)
+            url=get_twiml_url(unit_id),
+            if_machine='Hangup'  # Don't leave a message
         )
         call.fetch()
     except Exception as e:
