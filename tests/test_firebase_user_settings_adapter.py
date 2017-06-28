@@ -167,13 +167,13 @@ class TestFirebaseData_staleness:
 
     def test_is_stale__is_stale(self):
         data = user_settings.FirebaseData()
-        data.last_updated_at = datetime.datetime.utcnow() - datetime.timedelta(hours=3)
+        data.last_updated_at = datetime.datetime.utcnow() - datetime.timedelta(hours=2)
 
         assert data.is_stale
 
     def test_is_stale__is_not_stale_after_update(self):
         data = user_settings.FirebaseData()
-        data.last_updated_at = datetime.datetime.utcnow() - datetime.timedelta(hours=3)
+        data.last_updated_at = datetime.datetime.utcnow() - datetime.timedelta(hours=2)
 
         data.set('foo', 'bar')
         assert not data.is_stale

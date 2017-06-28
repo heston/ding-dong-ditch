@@ -42,7 +42,7 @@ def _get_path_list(path):
 
 class FirebaseData(dict):
     last_updated_at = None
-    data_ttl = datetime.timedelta(hours=2)
+    data_ttl = datetime.timedelta(hours=1)
 
     def __init__(self, *args, **kwargs):
         self.last_updated_at = datetime.datetime.utcnow()
