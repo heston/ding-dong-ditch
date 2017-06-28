@@ -1,7 +1,11 @@
+import datetime
+
 import blinker
 import pytest
 
 from dingdongditch import firebase_user_settings_adapter as user_settings
+from dingdongditch.exceptions import StaleData
+
 
 class Test_get_path_list:
     def test_no_path(self):
@@ -143,6 +147,38 @@ class TestFirebaseData_pubsub:
         listen_mock.assert_called_with(data, value=2)
 
 
+class TestFirebaseData_staleness:
+    def test_last_updated_at__set_on_init(self):
+        data = user_settings.FirebaseData()
+
+        assert isinstance(data.last_updated_at, datetime.datetime)
+
+
+    def test_last_updated_at__somehow_missing(self):
+        data = user_settings.FirebaseData()
+        data.last_updated_at = None
+
+        assert data.is_stale
+
+    def test_is_stale__is_not_stale(self):
+        data = user_settings.FirebaseData()
+
+        assert not data.is_stale
+
+    def test_is_stale__is_stale(self):
+        data = user_settings.FirebaseData()
+        data.last_updated_at = datetime.datetime.utcnow() - datetime.timedelta(hours=2)
+
+        assert data.is_stale
+
+    def test_is_stale__is_not_stale_after_update(self):
+        data = user_settings.FirebaseData()
+        data.last_updated_at = datetime.datetime.utcnow() - datetime.timedelta(hours=2)
+
+        data.set('foo', 'bar')
+        assert not data.is_stale
+
+
 class Test_get_settings:
     def test_cold_cache(self, mocker):
         listen_mock = mocker.patch('dingdongditch.firebase_user_settings_adapter.listen')
@@ -154,16 +190,23 @@ class Test_get_settings:
         assert isinstance(result, user_settings.FirebaseData)
 
     def test_warm_cache(self, mocker):
-        mock_settings = {}
+        mock_settings = mocker.MagicMock(is_stale=False)
         user_settings._cache['user_settings'] = mock_settings
 
         result = user_settings.get_settings()
 
         assert result is mock_settings
 
+    def test_stale_cache(self, mocker):
+        mock_settings = mocker.MagicMock(is_stale=True)
+        user_settings._cache['user_settings'] = mock_settings
+
+        with pytest.raises(StaleData):
+            user_settings.get_settings()
+
 
 def test_put_settings_handler(mocker):
-    mock_settings = mocker.MagicMock()
+    mock_settings = mocker.MagicMock(is_stale=False)
     user_settings._cache['user_settings'] = mock_settings
 
     path = '/foo/bar'
@@ -174,7 +217,7 @@ def test_put_settings_handler(mocker):
 
 
 def test_patch_settings_handler(mocker):
-    mock_settings = mocker.MagicMock()
+    mock_settings = mocker.MagicMock(is_stale=False)
     user_settings._cache['user_settings'] = mock_settings
 
     path = '/'
@@ -222,3 +265,26 @@ def test_stream_handler__patch(mocker):
     user_settings._stream_handler(message)
 
     patch_handler_mock.assert_called_with(message['path'], message['data'])
+
+
+def test_hangup(mocker):
+    streams = {
+        'user_settings': mocker.Mock(),
+        'user_settings2': mocker.Mock(),
+    }
+    mocker.patch('dingdongditch.firebase_user_settings_adapter._streams', streams)
+
+    user_settings.hangup()
+
+    assert streams['user_settings'].close.called
+    assert streams['user_settings2'].close.called
+
+
+def test_reset(mocker):
+    hangup = mocker.patch('dingdongditch.firebase_user_settings_adapter.hangup')
+    _cache = mocker.patch('dingdongditch.firebase_user_settings_adapter._cache')
+
+    user_settings.reset()
+
+    assert hangup.called
+    assert _cache.clear.called

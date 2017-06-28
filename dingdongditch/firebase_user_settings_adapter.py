@@ -1,11 +1,13 @@
 import atexit
 import collections
+import datetime
 import logging
 
 from blinker import signal
 import pyrebase
 
 from . import system_settings as settings
+from .exceptions import StaleData
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +41,13 @@ def _get_path_list(path):
 
 
 class FirebaseData(dict):
+    last_updated_at = None
+    data_ttl = datetime.timedelta(hours=1)
+
+    def __init__(self, *args, **kwargs):
+        self.last_updated_at = datetime.datetime.utcnow()
+        super().__init__(*args, **kwargs)
+
     def get_node_for_path(self, path):
         keys = _get_path_list(path)
         node = self
@@ -86,6 +95,8 @@ class FirebaseData(dict):
                 del node.parent[node.key]
             else:
                 node.parent[node.key] = data
+
+        self.last_updated_at = datetime.datetime.utcnow()
         signal(path).send(self, value=data)
 
     def merge(self, path, data):
@@ -103,10 +114,28 @@ class FirebaseData(dict):
                 return None
         return node
 
+    @property
+    def is_stale(self):
+        if not self.last_updated_at:
+            return True
+
+        return datetime.datetime.utcnow() - self.last_updated_at > self.data_ttl
+
 
 def get_settings():
     try:
-        return _cache['user_settings']
+        settings = _cache['user_settings']
+        if settings.is_stale:
+            logger.warning(
+                'Stale data found. Last update was %s',
+                settings.last_updated_at
+            )
+            raise StaleData(
+                'Firebase user data last updated at {}'.format(
+                    settings.last_updated_at
+                )
+            )
+        return settings
     except KeyError:
         # Fetch settings now
         _cache['user_settings'] = FirebaseData(db.child('settings').get().val())
@@ -150,7 +179,14 @@ def set_data(path, data, root='settings'):
     child.set(data)
 
 
+def reset():
+    logger.debug('Resetting all data')
+    hangup()
+    _cache.clear()
+
+
 @atexit.register
 def hangup():
+    logger.debug('Closing all streams')
     for stream in _streams.values():
         stream.close()

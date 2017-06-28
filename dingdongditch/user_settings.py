@@ -6,6 +6,7 @@ import pickle
 
 from . import system_settings as settings
 from . import firebase_user_settings_adapter
+from .exceptions import StaleData
 
 ADAPTERS = {
     'firebase': firebase_user_settings_adapter
@@ -29,6 +30,11 @@ def get_data():
 
     try:
         data = adapter.get_settings()
+    except StaleData:
+        logger.debug('Stale data returned from adapter "%s." Resetting.', adapter.NAME)
+        adapter.reset()
+        init_user_data()
+        return get_data()
     except Exception as e:
         logger.exception(
             'Could not load user settings from adapter "%s": %s', adapter.NAME, e
