@@ -1,6 +1,7 @@
 import pytest
 
 from dingdongditch import user_settings, firebase_user_settings_adapter
+from dingdongditch.exceptions import StaleData
 
 
 @pytest.fixture
@@ -43,6 +44,18 @@ def test_get_data__valid(adapter):
     user_settings.get_data()
 
     assert adapter.get_settings.called
+
+
+def test_get_data__stale(adapter, mocker):
+    init_user_data = mocker.patch('dingdongditch.user_settings.init_user_data')
+    data = {}
+    adapter.get_settings.side_effect = [StaleData, data]
+
+    result = user_settings.get_data()
+
+    assert adapter.reset.called
+    assert init_user_data.called
+    assert result is data
 
 
 def test_set_data__error(adapter, mocker):
