@@ -4,7 +4,6 @@ import blinker
 import pytest
 
 from dingdongditch import firebase_user_settings_adapter as user_settings
-from dingdongditch.exceptions import StaleData
 
 
 class Test_get_path_list:
@@ -190,23 +189,16 @@ class Test_get_settings:
         assert isinstance(result, user_settings.FirebaseData)
 
     def test_warm_cache(self, mocker):
-        mock_settings = mocker.MagicMock(is_stale=False)
+        mock_settings = mocker.MagicMock()
         user_settings._cache['user_settings'] = mock_settings
 
         result = user_settings.get_settings()
 
         assert result is mock_settings
 
-    def test_stale_cache(self, mocker):
-        mock_settings = mocker.MagicMock(is_stale=True)
-        user_settings._cache['user_settings'] = mock_settings
-
-        with pytest.raises(StaleData):
-            user_settings.get_settings()
-
 
 def test_put_settings_handler(mocker):
-    mock_settings = mocker.MagicMock(is_stale=False)
+    mock_settings = mocker.MagicMock()
     user_settings._cache['user_settings'] = mock_settings
 
     path = '/foo/bar'
@@ -217,7 +209,7 @@ def test_put_settings_handler(mocker):
 
 
 def test_patch_settings_handler(mocker):
-    mock_settings = mocker.MagicMock(is_stale=False)
+    mock_settings = mocker.MagicMock()
     user_settings._cache['user_settings'] = mock_settings
 
     path = '/'
