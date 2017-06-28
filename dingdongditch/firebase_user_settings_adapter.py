@@ -7,7 +7,6 @@ from blinker import signal
 import pyrebase
 
 from . import system_settings as settings
-from .exceptions import StaleData
 
 logger = logging.getLogger(__name__)
 
@@ -124,18 +123,7 @@ class FirebaseData(dict):
 
 def get_settings():
     try:
-        settings = _cache['user_settings']
-        if settings.is_stale:
-            logger.warning(
-                'Stale data found. Last update was %s',
-                settings.last_updated_at
-            )
-            raise StaleData(
-                'Firebase user data last updated at {}'.format(
-                    settings.last_updated_at
-                )
-            )
-        return settings
+        return _cache['user_settings']
     except KeyError:
         # Fetch settings now
         _cache['user_settings'] = FirebaseData(db.child('settings').get().val())
