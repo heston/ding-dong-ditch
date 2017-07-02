@@ -30,6 +30,7 @@ _cache = {}
 
 Node = collections.namedtuple('Node', 'value parent key')
 
+
 def _get_path_list(path):
     path = path.strip('/')
 
@@ -137,10 +138,12 @@ def _put_settings_handler(path, data):
     logger.debug('PUT settings: path=%s data=%s', path, data)
     settings.set(path, data)
 
+
 def _patch_settings_handler(path, data):
     logger.debug('PATCH settings: path=%s data=%s', path, data)
     settings = get_settings()
     settings.merge(path, data)
+
 
 def _stream_handler(message):
     logger.debug('STREAM received: %s', message)

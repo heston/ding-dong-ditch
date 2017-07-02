@@ -10,7 +10,6 @@ class Env(object):
     def string(cls, name, default=''):
         return str(cls.raw(name, default))
 
-
     @classmethod
     def number(cls, name, default=0):
         try:

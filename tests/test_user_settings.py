@@ -46,19 +46,6 @@ def test_get_data__valid(adapter):
     assert adapter.get_settings.called
 
 
-def test_get_data__stale(adapter, mocker):
-    init_user_data = mocker.patch('dingdongditch.user_settings.init_user_data')
-    stale_data = mocker.Mock(is_stale=True)
-    fresh_data = mocker.Mock(is_stale=False)
-    adapter.get_settings.side_effect = [stale_data, fresh_data]
-
-    result = user_settings.get_data()
-
-    assert adapter.reset.called
-    assert init_user_data.called
-    assert result is fresh_data
-
-
 def test_set_data__error(adapter, mocker):
     adapter.set_data.side_effect = TypeError
     logger_mock = mocker.patch('dingdongditch.user_settings.logger')
@@ -108,10 +95,12 @@ def test_init_system_data__dual_units(mocker, settings, set_data):
 
 def test_init_user_data__single_unit(mocker, settings, set_data):
     settings(UNIT_1=mocker.Mock(id='1111'))
+    watch = mocker.patch('dingdongditch.watcher.watch')
 
     user_settings.init_user_data()
 
     set_data.assert_called_with('1111/strike', 0)
+    assert watch.called
 
 
 def test_init_user_data__dual_units(mocker, settings, set_data):
@@ -119,6 +108,7 @@ def test_init_user_data__dual_units(mocker, settings, set_data):
         UNIT_1=mocker.Mock(id='1111'),
         UNIT_2=mocker.Mock(id='2222')
     )
+    watch = mocker.patch('dingdongditch.watcher.watch')
 
     user_settings.init_user_data()
 
@@ -136,6 +126,16 @@ def test_init_data(mocker):
 
     assert init_system_data.called
     assert init_user_data.called
+
+
+def test_reset(mocker, adapter, get_data):
+    init_user_data = mocker.patch('dingdongditch.user_settings.init_user_data')
+
+    user_settings.reset()
+
+    assert adapter.reset.called
+    assert init_user_data.called
+    assert get_data.called
 
 
 def test_get_unit_by_id__missing_data(get_data):

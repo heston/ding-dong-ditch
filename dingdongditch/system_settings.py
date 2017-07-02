@@ -56,7 +56,7 @@ FROM_NUMBER = Env.string('DDD_FROM_NUMBER')
 ##
 
 # The throttle rate of the doorbell trigger, in seconds.
-BUZZER_INTERVAL = Env.number('DDD_BUZZER_INTERVAL', 15)
+BUZZER_INTERVAL = Env.number('DDD_BUZZER_INTERVAL', 30)
 
 # The time (in seconds) to wait after the buzzer is pushed to notify recipients.
 BUZZER_HOLD = Env.number('DDD_BUZZER_HOLD', 0.2)
@@ -86,7 +86,7 @@ GPIO_OUTPUT_PIN_STIKE_1 = Env.number('DDD_GPIO_OUTPUT_PIN_STRIKE_1')
 UNIT_2_ID = Env.string('DDD_UNIT_2_ID')
 
 # The GPIO input pin number that will pull up when the doorbell is rung
-GPIO_INPUT_PIN_BELL_2= Env.number('DDD_GPIO_INPUT_PIN_BELL_2')
+GPIO_INPUT_PIN_BELL_2 = Env.number('DDD_GPIO_INPUT_PIN_BELL_2')
 
 # The GPIO output pin that will trigger the traditional doorbell
 GPIO_OUTPUT_PIN_BELL_2 = Env.number('DDD_GPIO_OUTPUT_PIN_BELL_2')
