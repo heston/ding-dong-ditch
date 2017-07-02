@@ -1,5 +1,6 @@
 from dingdongditch import system_settings, trigger
 
+
 def test_trigger_unit_1(mocker):
     unit_1_mock = mocker.patch('dingdongditch.action.UNIT_1')
     unit_1_mock.id = 1
