@@ -4,7 +4,9 @@ python:
 # command to install dependencies
 install: make setup_ci
 # command to run tests
-script: make test_ci
+script:
+  - make test_ci
+  - make lint_ci
 env:
   # The Node version should match what is running in Firebase.
   # This value was determined empirically by executing the following
