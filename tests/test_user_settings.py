@@ -46,19 +46,6 @@ def test_get_data__valid(adapter):
     assert adapter.get_settings.called
 
 
-# def test_get_data__stale(adapter, mocker):
-#     init_user_data = mocker.patch('dingdongditch.user_settings.init_user_data')
-#     stale_data = mocker.Mock(is_stale=True)
-#     fresh_data = mocker.Mock(is_stale=False)
-#     adapter.get_settings.side_effect = [stale_data, fresh_data]
-
-#     result = user_settings.get_data()
-
-#     assert adapter.reset.called
-#     assert init_user_data.called
-#     assert result is fresh_data
-
-
 def test_set_data__error(adapter, mocker):
     adapter.set_data.side_effect = TypeError
     logger_mock = mocker.patch('dingdongditch.user_settings.logger')
