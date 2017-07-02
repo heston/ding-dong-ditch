@@ -14,7 +14,7 @@ def test_watcher__not_stale(mocker):
     update = mocker.Mock()
     interval = timedelta(seconds=.001)
     cancel = watcher.watch(is_stale, update, interval)
-    time.sleep(.01)
+    time.sleep(.1)
     cancel()
     assert is_stale.call_count == 4
     assert update.called is False
@@ -30,7 +30,7 @@ def test_watcher__stale(mocker):
     update = mocker.Mock()
     interval = timedelta(seconds=.001)
     cancel = watcher.watch(is_stale, update, interval)
-    time.sleep(.01)
+    time.sleep(.1)
     cancel()
     assert is_stale.call_count == 4
     assert update.called is True
