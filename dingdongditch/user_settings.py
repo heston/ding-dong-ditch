@@ -1,11 +1,9 @@
 from collections import namedtuple
-from datetime import datetime, timedelta
 import logging
-import os.path
-import pickle
 
 from . import system_settings as settings
 from . import firebase_user_settings_adapter
+from . import watcher
 
 ADAPTERS = {
     'firebase': firebase_user_settings_adapter
@@ -28,24 +26,12 @@ def get_data():
     logger.info('Getting user settings from adapter "%s"', adapter.NAME)
 
     try:
-        data = adapter.get_settings()
+        return adapter.get_settings()
     except Exception as e:
         logger.exception(
             'Could not load user settings from adapter "%s": %s', adapter.NAME, e
         )
         return None
-
-    if data.is_stale:
-        logger.debug(
-            'Stale data returned from adapter "%s." Last update was %s',
-            adapter.NAME,
-            data.last_updated_at
-        )
-        adapter.reset()
-        init_user_data()
-        return get_data()
-
-    return data
 
 
 def set_data(key, data, root='settings'):
@@ -77,9 +63,22 @@ def init_user_data():
         path = '{}/strike'.format(settings.UNIT_2.id)
         set_data(path, 0)
 
+    data = get_data()
+    watcher.watch(lambda: data.is_stale, reset)
+
 
 def init_data():
     init_system_data()
+    init_user_data()
+
+
+def reset():
+    adapter = get_adapter()
+    logger.debug(
+        'Resetting adapter "%s."',
+        adapter.NAME
+    )
+    adapter.reset()
     init_user_data()
     return get_data()
 
