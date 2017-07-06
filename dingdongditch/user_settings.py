@@ -73,6 +73,7 @@ def init_data():
 
 
 def reset():
+    watcher.cancel()
     adapter = get_adapter()
     logger.debug(
         'Resetting adapter "%s."',

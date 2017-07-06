@@ -130,9 +130,11 @@ def test_init_data(mocker):
 
 def test_reset(mocker, adapter, get_data):
     init_user_data = mocker.patch('dingdongditch.user_settings.init_user_data')
+    cancel = mocker.patch('dingdongditch.watcher.cancel')
 
     user_settings.reset()
 
+    assert cancel.called
     assert adapter.reset.called
     assert init_user_data.called
     assert get_data.called
