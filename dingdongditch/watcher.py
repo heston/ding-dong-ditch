@@ -30,7 +30,7 @@ def watch(should_update, update_func, interval=DEFAULT_INTERVAL):
 
     def action():
         if should_update():
-            logger.debug('Required update detected. Updating: ', update_func)
+            logger.debug('Required update detected. Updating: %s', update_func)
             update_func()
         start()
 
