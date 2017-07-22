@@ -24,7 +24,9 @@ setup_ci:
 
 .PHONY: install
 install:
-	sudo cp dingdongditch.service /lib/systemd/system/dingdongditch.service
+	sudo sed "s|{{DIR}}|$(dirname $(realpath dingdongditch.service))|g" \
+		dingdongditch.service \
+		> /lib/systemd/system/dingdongditch.service
 	sudo chmod 644 /lib/systemd/system/dingdongditch.service
 	sudo systemctl daemon-reload
 	sudo systemctl enable dingdongditch.service
