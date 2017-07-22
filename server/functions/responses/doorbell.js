@@ -1,6 +1,5 @@
 const TwimlResponse = require('./twiml-response');
 const { times } = require('lodash');
-const { DOORBELL_AUDIO_URL } = require('../constants');
 
 module.exports = class Doorbell extends TwimlResponse {
     constructor(baseUrl, pin) {
@@ -18,8 +17,8 @@ module.exports = class Doorbell extends TwimlResponse {
         });
 
         times(5, () => {
-            gather.play(DOORBELL_AUDIO_URL);
             gather.say(
+                'Ding dong!' +
                 'This is your doorbell calling. Someone is at the door. ' +
                 'Press any key to unlock the gate.'
             );
