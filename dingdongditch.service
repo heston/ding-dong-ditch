@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=idle
-WorkingDirectory=/home/pi/ding-dong-ditch
+WorkingDirectory={{DIR}}
 ExecStart=/usr/bin/make run
 
 [Install]

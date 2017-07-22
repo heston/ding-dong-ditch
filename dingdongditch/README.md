@@ -6,9 +6,9 @@ including the doorbell, mechanical chime, and door/gate strike, if present.
 
 Prerequisites
 --------------
-* This has only been tested on Python 3.6. At the time of writing, this is [a pain to install](http://bohdan-danishevsky.blogspot.com/2017/01/building-python-360-on-raspberry-pi-3.html).
+* This has only been tested on Python 3.6. At the time of writing, this was [a pain to install](http://bohdan-danishevsky.blogspot.com/2017/01/building-python-360-on-raspberry-pi-3.html) on Raspbian.
 
-* This has only been tested on a Raspberry Pi B (yeah, pretty old).
+* This has only been tested on a Raspberry Pi B.
 
 * This has only been tested on the OS `Raspbian GNU/Linux 8 (jessie)`.
 
@@ -76,11 +76,7 @@ a `systemd` service. This is pretty easy:
 make install
 ```
 
-*Note:* If you cloned this repo into a directory other than `/home/pi/ding-dong-ditch`,
-you'll need to update the [`WorkingDirectory` key in `dingdongditch.service`](https://github.com/heston/ding-dong-ditch/blob/master/dingdongditch.service#L7)
-to point to the right location *before* running `make install`.
-
-If you decide this is not for you, uninstalling is equally easy:
+If you decide it's not for you, uninstalling is equally easy:
 
 ```bash
 make uninstall
