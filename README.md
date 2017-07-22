@@ -59,21 +59,3 @@ Sure, I could spend $200 on a fancy, Internet-of-things
 3. $200 seems steep for a doorbell. I'd rather spend $200 on beer.
 
 4. I like to tinker.
-
-License
--------
-
-Everything provided in this repository is free to use, and granted to the public domain.
-Do whatever you want with it, subject to the Limitation of Liabilty, below. If you like
-this, or find it useful, you might consider dropping me a note so I feel warm and fuzzy
-inside. Or not. It's up to you.
-
-Limitation of Liability
------------------------
-
-This software, and any accompaying schematics, diagrams and instructions (the "Project")
-are provided "AS IS" with no warranty either expressed or implied. Further, the author
-shall not be held liable for any outcome whatsoever as the result of your use of the
-Project. To be crystal clear, if you try this at home, and it frys your Pi, burns down
-your house, or leaves you disfigured for life, you agree that it was entirely your own
-fault. **Use this Project at your own risk.**
