@@ -259,7 +259,7 @@ def test_stream_handler__patch(mocker):
     patch_handler_mock.assert_called_with(message['path'], message['data'])
 
 
-@pytst.mark.skip(reason='Disabled until thread blocking is fixed')
+@pytest.mark.skip(reason='Disabled until thread blocking is fixed')
 def test_hangup(mocker):
     streams = {
         'user_settings': mocker.Mock(),
