@@ -42,7 +42,7 @@ def _get_path_list(path):
 
 class FirebaseData(dict):
     last_updated_at = None
-    data_ttl = datetime.timedelta(hours=1)
+    data_ttl = datetime.timedelta(hours=2)
 
     def __init__(self, *args, **kwargs):
         self.last_updated_at = datetime.datetime.utcnow()
@@ -178,6 +178,8 @@ def reset():
 
 @atexit.register
 def hangup():
-    logger.debug('Closing all streams')
-    for stream in _streams.values():
-        stream.close()
+    pass
+    # TODO: properly shut down the streams when this doesn't hang
+    # logger.debug('Closing all streams')
+    # for stream in _streams.values():
+    #     stream.close()

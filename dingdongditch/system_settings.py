@@ -59,7 +59,7 @@ FROM_NUMBER = Env.string('DDD_FROM_NUMBER')
 BUZZER_INTERVAL = Env.number('DDD_BUZZER_INTERVAL', 30)
 
 # The time (in seconds) to wait after the buzzer is pushed to notify recipients.
-BUZZER_HOLD = Env.number('DDD_BUZZER_HOLD', 0.2)
+BUZZER_HOLD = Env.number('DDD_BUZZER_HOLD', 0.3)
 
 
 ##
