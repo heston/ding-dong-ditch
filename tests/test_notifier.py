@@ -14,7 +14,9 @@ def test__notify__success(mocker):
         if_machine='Hangup'
     )
     assert result is client_mock.calls.create.return_value.sid
-    assert log_mock.info.called
+    log_mock.info.assert_any_call(
+        'Notifying unit "%s" recipient: %s', '1234', '+14155551001'
+    )
 
 
 def test__notify__failure(mocker):
@@ -25,7 +27,7 @@ def test__notify__failure(mocker):
     result = notifier.notify('1234', '+14155551001')
 
     assert log_mock.exception.called
-    assert result is None
+    assert result is False
 
 
 def test__notify_recipients__unknown_unit_id(mocker):
@@ -60,13 +62,13 @@ def test__notify_recipients__should_not_ring_bell(mocker, settings):
     get_unit_by_id_mock.return_value = user_settings.Unit(
         should_ring_bell=False, recipients=[]
     )
-    get_unit_by_id_action_mock = mocker.patch('dingdongditch.action.get_unit_by_id')
+    notify_mock = mocker.patch('dingdongditch.notifier.notify')
+    ring_mock = mocker.patch('dingdongditch.notifier.ring')
 
     notifier.notify_recipients('1234')
 
     assert not log_mock.warning.called
-    assert not log_mock.info.called
-    assert not get_unit_by_id_action_mock.called
+    assert not ring_mock.called
 
 
 def test__notify_recipients__should_ring_bell(mocker, settings):
@@ -80,14 +82,12 @@ def test__notify_recipients__should_ring_bell(mocker, settings):
     get_unit_by_id_mock.return_value = user_settings.Unit(
         should_ring_bell=True, recipients=[]
     )
-    get_unit_by_id_action_mock = mocker.patch('dingdongditch.action.get_unit_by_id')
+    ring_mock = mocker.patch('dingdongditch.notifier.ring')
 
     notifier.notify_recipients('1234')
 
     assert not log_mock.warning.called
-    log_mock.info.assert_called_with('Ringing bell in unit: %s', '1234')
-    assert get_unit_by_id_action_mock.called
-    assert get_unit_by_id_action_mock.return_value.bell.ring.called
+    ring_mock.assert_called_with('1234')
 
 
 def test__notify_recipients__should_call_recipients(mocker, settings):
@@ -106,7 +106,52 @@ def test__notify_recipients__should_call_recipients(mocker, settings):
     notifier.notify_recipients('1234')
 
     assert not log_mock.warning.called
-    log_mock.info.assert_called_with(
-        'Notifying unit "%s" recipient: %s', '1234', '+14155551001'
-    )
     notify_mock.assert_called_with('1234', '+14155551001')
+
+
+def test__notify_recipients__no_network__no_fallback(mocker, settings):
+    log_mock = mocker.patch('dingdongditch.notifier.logger')
+    settings(
+        RING_FALLBACK=False,
+        UNIT_1=system_settings.Unit(
+            id='1234', buzzer=None, bell=None, strike=None
+        )
+    )
+    get_unit_by_id_mock = mocker.patch('dingdongditch.user_settings.get_unit_by_id')
+    get_unit_by_id_mock.return_value = user_settings.Unit(
+        should_ring_bell=False, recipients=['+14155551001']
+    )
+    notify_mock = mocker.patch('dingdongditch.notifier.notify')
+    notify_mock.return_value = False
+    ring_mock = mocker.patch('dingdongditch.notifier.ring')
+
+    notifier.notify_recipients('1234')
+
+    log_mock.error.assert_called_with(
+        'All notifications failed!'
+    )
+    assert not ring_mock.called
+
+
+def test__notify_recipients__no_network__with_fallback(mocker, settings):
+    log_mock = mocker.patch('dingdongditch.notifier.logger')
+    settings(
+        RING_FALLBACK=True,
+        UNIT_1=system_settings.Unit(
+            id='1234', buzzer=None, bell=None, strike=None
+        )
+    )
+    get_unit_by_id_mock = mocker.patch('dingdongditch.user_settings.get_unit_by_id')
+    get_unit_by_id_mock.return_value = user_settings.Unit(
+        should_ring_bell=False, recipients=['+14155551001']
+    )
+    notify_mock = mocker.patch('dingdongditch.notifier.notify')
+    notify_mock.return_value = False
+    ring_mock = mocker.patch('dingdongditch.notifier.ring')
+
+    notifier.notify_recipients('1234')
+
+    log_mock.error.assert_called_with(
+        'All notifications failed!'
+    )
+    assert ring_mock.called
