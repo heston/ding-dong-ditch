@@ -44,8 +44,11 @@ class FirebaseData(dict):
     last_updated_at = None
     data_ttl = datetime.timedelta(hours=2)
 
-    def __init__(self, *args, **kwargs):
+    def _set_last_updated(self):
         self.last_updated_at = datetime.datetime.utcnow()
+
+    def __init__(self, *args, **kwargs):
+        self._set_last_updated()
         super().__init__(*args, **kwargs)
 
     def get_node_for_path(self, path):
@@ -96,7 +99,7 @@ class FirebaseData(dict):
             else:
                 node.parent[node.key] = data
 
-        self.last_updated_at = datetime.datetime.utcnow()
+        self._set_last_updated()
         signal(path).send(self, value=data)
 
     def merge(self, path, data):

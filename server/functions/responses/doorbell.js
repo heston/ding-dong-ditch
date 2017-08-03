@@ -18,7 +18,7 @@ module.exports = class Doorbell extends TwimlResponse {
 
         times(5, () => {
             gather.say(
-                'Ding dong!' +
+                'Ding dong! ' +
                 'This is your doorbell calling. Someone is at the door. ' +
                 'Press any key to unlock the gate.'
             );
