@@ -43,3 +43,4 @@ def cancel():
     logger.debug('Stopping all watchers')
     for timer in _timers.values():
         timer.cancel()
+    _timers.clear()

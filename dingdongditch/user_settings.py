@@ -65,6 +65,7 @@ def init_user_data():
 
     data = get_data()
     watcher.watch(lambda: data.is_stale, reset)
+    return data
 
 
 def init_data():
@@ -80,8 +81,7 @@ def reset():
         adapter.NAME
     )
     adapter.reset()
-    init_user_data()
-    return get_data()
+    return init_user_data()
 
 
 def get_unit_by_id(unit_id):
