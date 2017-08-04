@@ -137,7 +137,6 @@ def test_reset(mocker, adapter, get_data):
     assert cancel.called
     assert adapter.reset.called
     assert init_user_data.called
-    assert get_data.called
 
 
 def test_get_unit_by_id__missing_data(get_data):
