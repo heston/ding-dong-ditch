@@ -18,6 +18,8 @@ def get_twiml_url(unit_id):
 
 
 def notify(unit_id, number):
+    logger.info('Notifying unit "%s" recipient: %s', unit_id, number)
+
     try:
         call = client.calls.create(
             to=number,
@@ -28,9 +30,16 @@ def notify(unit_id, number):
         call.fetch()
     except Exception as e:
         logger.exception('Failed to notify recipient: %s. Error: %s', number, e)
+        return False
     else:
         logger.info('Notified recipient: %s. Sid: %s', number, call.sid)
         return call.sid
+
+
+def ring(unit_id):
+    logger.info('Ringing bell in unit: %s', unit_id)
+    action_unit = action.get_unit_by_id(unit_id)
+    action_unit.bell.ring()
 
 
 def notify_recipients(unit_id):
@@ -45,10 +54,14 @@ def notify_recipients(unit_id):
         return
 
     if usr_unit.should_ring_bell:
-        logger.info('Ringing bell in unit: %s', unit_id)
-        action_unit = action.get_unit_by_id(unit_id)
-        action_unit.bell.ring()
+        ring(unit_id)
 
-    for recipient in usr_unit.recipients:
-        logger.info('Notifying unit "%s" recipient: %s', unit_id, recipient)
-        notify(unit_id, recipient)
+    # notify everyone and track failures
+    # TODO: Run each request in a separate thread
+    failures = [not notify(unit_id, recipient) for recipient in usr_unit.recipients]
+
+    # If all notifications failed, fallback to normal bell, if enabled
+    if usr_unit.recipients and all(failures):
+        logger.error('All notifications failed!')
+        if system_settings.RING_FALLBACK:
+            ring(unit_id)

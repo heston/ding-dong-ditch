@@ -12,8 +12,14 @@ class Env(object):
 
     @classmethod
     def number(cls, name, default=0):
+        val = cls.raw(name, default)
         try:
-            return int(cls.raw(name, default))
+            try:
+                if '.' in val:
+                    return float(val)
+                raise TypeError('Not a float')
+            except TypeError:
+                return int(val)
         except ValueError:
             return default
 
@@ -24,6 +30,6 @@ class Env(object):
         if value is None:
             return default
 
-        if value in ('0', 'false', 'False', 'off', 'no'):
+        if value in ('', '0', 'false', 'False', 'off', 'no'):
             return False
         return True

@@ -61,6 +61,9 @@ BUZZER_INTERVAL = Env.number('DDD_BUZZER_INTERVAL', 30)
 # The time (in seconds) to wait after the buzzer is pushed to notify recipients.
 BUZZER_HOLD = Env.number('DDD_BUZZER_HOLD', 0.3)
 
+# Whether to always ring the bell, regardless of user setting, when the network is down
+RING_FALLBACK = Env.boolean('DDD_RING_FALLBACK', True)
+
 
 ##
 ## Unit 1
