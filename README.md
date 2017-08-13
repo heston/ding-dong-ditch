@@ -12,6 +12,12 @@ Why?
 Whenever someone rings my doorbell, a 16V AV circuit is connected, which powers a
 solenoid that strikes a metal bar to produce a loud "DING DONG" inside my home. The chime prompts my dog to bark wildly, and wakes my sleeping baby. This simply will not do.
 
+PyBay 2017 Presentation
+-----------------------
+
+Ding Dong Ditch was presented at PyBay 2017. You can view the [presentation here](https://docs.google.com/presentation/d/1-QNlVuURwTLELYE67V2P2lFVKB9IGrhZ5yJT21l4mTI/edit?usp=sharing).
+
+
 Tools
 -----
 
