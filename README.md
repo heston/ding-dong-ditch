@@ -15,7 +15,7 @@ solenoid that strikes a metal bar to produce a loud "DING DONG" inside my home. 
 PyBay 2017 Presentation
 -----------------------
 
-Ding Dong Ditch was presented at PyBay 2017. You can view the [presentation here](https://docs.google.com/presentation/d/1-QNlVuURwTLELYE67V2P2lFVKB9IGrhZ5yJT21l4mTI/edit?usp=sharing).
+Ding Dong Ditch was presented at PyBay 2017. You can [view the presentation here](https://docs.google.com/presentation/d/1-QNlVuURwTLELYE67V2P2lFVKB9IGrhZ5yJT21l4mTI/edit?usp=sharing).
 
 
 Tools
