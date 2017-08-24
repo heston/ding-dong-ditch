@@ -2,6 +2,7 @@ import atexit
 import collections
 import datetime
 import logging
+import queue
 
 from blinker import signal
 import pyrebase
@@ -26,6 +27,7 @@ firebase_config = {
 firebase = pyrebase.initialize_app(firebase_config)
 db = firebase.database()
 _streams = {}
+_gc_streams = queue.Queue()
 _cache = {}
 
 Node = collections.namedtuple('Node', 'value parent key')
@@ -175,14 +177,29 @@ def set_data(path, data, root='settings'):
 
 def reset():
     logger.debug('Resetting all data')
-    hangup()
+    hangup(block=False)
     _cache.clear()
 
 
+def _close_gc_streams(block=False):
+    def worker():
+        while True:
+            stream = _gc_streams.get()
+            logger.debug('Shutting down stream: %s', stream)
+            stream.close()
+            _gc_streams.task_done()
+
+    t = Thread(target=worker)
+    t.start()
+
+    if block:
+        _gc_streams.join()
+
+
 @atexit.register
-def hangup():
-    pass
-    # TODO: properly shut down the streams when this doesn't hang
-    # logger.debug('Closing all streams')
-    # for stream in _streams.values():
-    #     stream.close()
+def hangup(block=True):
+    logger.debug('Marking all streams for shut down')
+    for stream in _streams.values():
+        _gc_streams.put(stream)
+    _streams.clear()
+    _close_gc_streams(block)
