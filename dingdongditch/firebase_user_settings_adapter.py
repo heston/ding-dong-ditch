@@ -3,6 +3,7 @@ import collections
 import datetime
 import logging
 import queue
+import threading
 
 from blinker import signal
 import pyrebase
@@ -28,6 +29,7 @@ firebase = pyrebase.initialize_app(firebase_config)
 db = firebase.database()
 _streams = {}
 _gc_streams = queue.Queue()
+_gc_thread = None
 _cache = {}
 
 Node = collections.namedtuple('Node', 'value parent key')
@@ -165,6 +167,7 @@ def _stream_handler(message):
 
 def listen():
     _streams['user_settings'] = db.child('settings').stream(_stream_handler)
+    _start_stream_gc()
 
 
 def set_data(path, data, root='settings'):
@@ -181,19 +184,20 @@ def reset():
     _cache.clear()
 
 
-def _close_gc_streams(block=False):
-    def worker():
-        while True:
-            stream = _gc_streams.get()
-            logger.debug('Shutting down stream: %s', stream)
-            stream.close()
-            _gc_streams.task_done()
+def _gc_stream_worker():
+    while True:
+        stream = _gc_streams.get()
+        logger.debug('Shutting down stream: %s', stream)
+        stream.close()
+        _gc_streams.task_done()
 
-    t = Thread(target=worker)
-    t.start()
 
-    if block:
-        _gc_streams.join()
+def _start_stream_gc():
+    global _gc_thread
+
+    if _gc_thread is None:
+        _gc_thread = threading.Thread(target=_gc_stream_worker, daemon=True)
+        _gc_thread.start()
 
 
 @atexit.register
@@ -202,4 +206,6 @@ def hangup(block=True):
     for stream in _streams.values():
         _gc_streams.put(stream)
     _streams.clear()
-    _close_gc_streams(block)
+
+    if block:
+        _gc_streams.join()
