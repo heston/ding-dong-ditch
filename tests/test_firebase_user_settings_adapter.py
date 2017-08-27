@@ -152,7 +152,6 @@ class TestFirebaseData_staleness:
 
         assert isinstance(data.last_updated_at, datetime.datetime)
 
-
     def test_last_updated_at__somehow_missing(self):
         data = user_settings.FirebaseData()
         data.last_updated_at = None
@@ -259,18 +258,50 @@ def test_stream_handler__patch(mocker):
     patch_handler_mock.assert_called_with(message['path'], message['data'])
 
 
-@pytest.mark.skip(reason='Disabled until thread blocking is fixed')
 def test_hangup(mocker):
-    streams = {
-        'user_settings': mocker.Mock(),
-        'user_settings2': mocker.Mock(),
-    }
+    stream = mocker.Mock()
+    streams = mocker.Mock()
+    streams.values.return_value = [stream]
     mocker.patch('dingdongditch.firebase_user_settings_adapter._streams', streams)
+    _gc_streams = mocker.patch('dingdongditch.firebase_user_settings_adapter._gc_streams')
 
     user_settings.hangup()
 
-    assert streams['user_settings'].close.called
-    assert streams['user_settings2'].close.called
+    _gc_streams.put.assert_called_with(stream)
+    assert streams.clear.called
+    assert _gc_streams.join.called
+
+
+def test_start_stream_gc():
+    try:
+        assert user_settings._gc_thread is None
+
+        user_settings._start_stream_gc()
+
+        assert user_settings._gc_thread.is_alive()
+    finally:
+        user_settings._gc_thread = None
+
+
+def test_start_stream_gc__multiple():
+    try:
+        assert user_settings._gc_thread is None
+
+        user_settings._start_stream_gc()
+        user_settings._start_stream_gc()
+
+        assert user_settings._gc_thread.is_alive()
+    finally:
+        user_settings._gc_thread = None
+
+
+def test_stream_gc(mocker):
+    stream = mocker.Mock()
+    user_settings._start_stream_gc()
+    user_settings._gc_streams.put(stream)
+    user_settings._gc_streams.join()
+
+    assert stream.close.called
 
 
 def test_reset(mocker):
