@@ -124,9 +124,27 @@ class FirebaseData(dict):
     @property
     def is_stale(self):
         if not self.last_updated_at:
+            logger.debug(
+                'Data is stale: %s. Last updated at: %s',
+                self,
+                self.last_updated_at
+            )
             return True
 
-        return datetime.datetime.utcnow() - self.last_updated_at > self.data_ttl
+        stale = datetime.datetime.utcnow() - self.last_updated_at > self.data_ttl
+        if stale:
+            logger.debug(
+                'Data is stale: %s, Last updated at: %s',
+                self,
+                self.last_updated_at
+            )
+        else:
+            logger.debug(
+                'Data is fresh: %s, Last updated at: %s',
+                self,
+                self.last_updated_at
+            )
+        return stale
 
 
 def get_settings():
@@ -187,9 +205,10 @@ def reset():
 def _gc_stream_worker():
     while True:
         stream = _gc_streams.get()
-        logger.debug('Shutting down stream: %s', stream)
+        logger.debug('Closing stream: %s', stream)
         stream.close()
         _gc_streams.task_done()
+        logger.debug('Stream closed: %s', stream)
 
 
 def _start_stream_gc():
