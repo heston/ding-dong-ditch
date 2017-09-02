@@ -177,6 +177,22 @@ class TestFirebaseData_staleness:
         assert not data.is_stale
 
 
+def test_FirebaseData_repr():
+    data = user_settings.FirebaseData(a=1)
+    data_id = id(data)
+    data.last_updated_at = datetime.datetime(
+        year=2017, month=9, day=2, hour=20, minute=2, second=59
+    )
+    result = str(data)
+    assert result == (
+        'FirebaseData('
+            'id={}, '
+            'last_updated_at=2017-09-02 20:02:59, '
+            'data={{\'a\': 1}}'
+        ')'.format(data_id)
+    )
+
+
 class Test_get_settings:
     def test_cold_cache(self, mocker):
         listen_mock = mocker.patch('dingdongditch.firebase_user_settings_adapter.listen')
