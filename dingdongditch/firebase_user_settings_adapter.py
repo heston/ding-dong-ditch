@@ -124,27 +124,24 @@ class FirebaseData(dict):
     @property
     def is_stale(self):
         if not self.last_updated_at:
-            logger.debug(
-                'Data is stale: %s. Last updated at: %s',
-                self,
-                self.last_updated_at
-            )
+            logger.debug('Data is stale: %s', self)
             return True
 
         stale = datetime.datetime.utcnow() - self.last_updated_at > self.data_ttl
         if stale:
-            logger.debug(
-                'Data is stale: %s, Last updated at: %s',
-                self,
-                self.last_updated_at
-            )
+            logger.debug('Data is stale: %s', self)
         else:
-            logger.debug(
-                'Data is fresh: %s, Last updated at: %s',
-                self,
-                self.last_updated_at
-            )
+            logger.debug('Data is fresh: %s', self)
         return stale
+
+    def __repr__(self):
+        tmpl = '{cls}(id={id}, last_updated_at={ts}, data={data})'
+        return tmpl.format(
+            cls=type(self).__name__,
+            id=id(self),
+            ts=self.last_updated_at,
+            data=super().__repr__(),
+        )
 
 
 def get_settings():
