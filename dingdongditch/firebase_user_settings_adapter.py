@@ -121,7 +121,6 @@ class FirebaseData(dict):
                 return None
         return node
 
-    @property
     def is_stale(self):
         if not self.last_updated_at:
             logger.debug('Data is stale: %s', self)
@@ -181,7 +180,8 @@ def _stream_handler(message):
 
 
 def listen():
-    _streams['user_settings'] = db.child('settings').stream(_stream_handler)
+    stream = db.child('settings').stream(_stream_handler)
+    _streams[id(stream)] = stream
     _start_stream_gc()
 
 
@@ -205,6 +205,7 @@ def _gc_stream_worker():
         logger.debug('Closing stream: %s', stream)
         stream.close()
         _gc_streams.task_done()
+        del _streams[id(stream)]
         logger.debug('Stream closed: %s', stream)
 
 
@@ -221,7 +222,6 @@ def hangup(block=True):
     logger.debug('Marking all streams for shut down')
     for stream in _streams.values():
         _gc_streams.put(stream)
-    _streams.clear()
 
     if block:
         _gc_streams.join()

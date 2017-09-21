@@ -9,7 +9,7 @@ _timers = {}
 logger = logging.getLogger(__name__)
 
 
-def watch(should_update, update_func, interval=DEFAULT_INTERVAL):
+def watch(name, should_update, update_func, interval=DEFAULT_INTERVAL):
     """Watch something and call a function when it should be updated.
 
     Arguments:
@@ -25,7 +25,7 @@ def watch(should_update, update_func, interval=DEFAULT_INTERVAL):
 
     def start():
         logger.debug('Checking if update is required: %s', should_update)
-        _timers[update_func] = t = Timer(interval.total_seconds(), action)
+        _timers[name] = t = Timer(interval.total_seconds(), action)
         t.start()
 
     def action():
@@ -36,6 +36,13 @@ def watch(should_update, update_func, interval=DEFAULT_INTERVAL):
 
     start()
     return cancel
+
+
+def cancel(name):
+    watcher = _timers.get(name)
+    if watcher:
+        watcher.cancel()
+    del _timers[name]
 
 
 @atexit.register

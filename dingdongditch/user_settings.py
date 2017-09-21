@@ -64,7 +64,7 @@ def init_user_data():
         set_data(path, 0)
 
     data = get_data()
-    watcher.watch(lambda: data.is_stale, reset)
+    watcher.watch(id(data), data.is_stale, reset)
     return data
 
 
@@ -74,12 +74,13 @@ def init_data():
 
 
 def reset():
-    watcher.cancel()
+    data = get_data()
     adapter = get_adapter()
     logger.debug(
         'Resetting adapter "%s."',
         adapter.NAME
     )
+    watcher.cancel(id(data))
     adapter.reset()
     return init_user_data()
 
