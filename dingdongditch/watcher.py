@@ -45,7 +45,7 @@ def cancel(name):
 
 
 @atexit.register
-def cancel():
+def cancel_all():
     logger.debug('Stopping all watchers')
     for timer in _timers.values():
         timer.cancel()
