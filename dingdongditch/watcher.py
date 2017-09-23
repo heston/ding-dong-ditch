@@ -35,7 +35,6 @@ def watch(name, should_update, update_func, interval=DEFAULT_INTERVAL):
         start()
 
     start()
-    return cancel
 
 
 def cancel(name):

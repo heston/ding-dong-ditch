@@ -156,25 +156,25 @@ class TestFirebaseData_staleness:
         data = user_settings.FirebaseData()
         data.last_updated_at = None
 
-        assert data.is_stale
+        assert data.is_stale()
 
     def test_is_stale__is_not_stale(self):
         data = user_settings.FirebaseData()
 
-        assert not data.is_stale
+        assert not data.is_stale()
 
     def test_is_stale__is_stale(self):
         data = user_settings.FirebaseData()
         data.last_updated_at = datetime.datetime.utcnow() - datetime.timedelta(hours=2)
 
-        assert data.is_stale
+        assert data.is_stale()
 
     def test_is_stale__is_not_stale_after_update(self):
         data = user_settings.FirebaseData()
         data.last_updated_at = datetime.datetime.utcnow() - datetime.timedelta(hours=2)
 
         data.set('foo', 'bar')
-        assert not data.is_stale
+        assert not data.is_stale()
 
 
 def test_FirebaseData_repr():
@@ -284,7 +284,6 @@ def test_hangup(mocker):
     user_settings.hangup()
 
     _gc_streams.put.assert_called_with(stream)
-    assert streams.clear.called
     assert _gc_streams.join.called
 
 
