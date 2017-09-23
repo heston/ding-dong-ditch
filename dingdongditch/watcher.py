@@ -5,11 +5,40 @@ from threading import Timer
 
 DEFAULT_INTERVAL = datetime.timedelta(minutes=30)
 
-_timers = {}
+_watchers = {}
 logger = logging.getLogger(__name__)
 
 
-def watch(name, should_update, update_func, interval=DEFAULT_INTERVAL):
+class Watcher:
+    def __init__(self, should_update, update_func, interval=None):
+        self.should_update = should_update
+        self.update_func = update_func
+        self.interval = DEFAULT_INTERVAL if interval is None else interval
+        self.running = False
+
+    def start(self):
+        self.should_cancel = False
+        self._timer = Timer(self.interval.total_seconds(), self._action)
+        self._timer.start()
+        self.running = True
+
+    def _action(self):
+        if self.should_cancel:
+            self.running = False
+            return
+
+        logger.debug('Checking if update is required: %s', self.should_update)
+        if self.should_update():
+            logger.debug('Required update detected. Updating: %s', self.update_func)
+            self.update_func()
+        # Start a new timer
+        self.start()
+
+    def cancel(self):
+        self.should_cancel = True
+
+
+def watch(name, should_update, update_func, interval=None):
     """Watch something and call a function when it should be updated.
 
     Arguments:
@@ -22,31 +51,25 @@ def watch(name, should_update, update_func, interval=DEFAULT_INTERVAL):
 
     Returns: A callable that will stop all watchers.
     """
-
-    def start():
-        logger.debug('Checking if update is required: %s', should_update)
-        _timers[name] = t = Timer(interval.total_seconds(), action)
-        t.start()
-
-    def action():
-        if should_update():
-            logger.debug('Required update detected. Updating: %s', update_func)
-            update_func()
-        start()
-
-    start()
+    watcher = Watcher(should_update, update_func, interval)
+    _watchers[name] = watcher
+    watcher.start()
 
 
 def cancel(name):
-    watcher = _timers.get(name)
+    if name not in _watchers:
+        return None
+    logger.debug('Stopping watcher %s', name)
+    watcher = _watchers[name]
     if watcher:
         watcher.cancel()
-    del _timers[name]
+    del _watchers[name]
+    return True
 
 
 @atexit.register
 def cancel_all():
     logger.debug('Stopping all watchers')
-    for timer in _timers.values():
-        timer.cancel()
-    _timers.clear()
+    for watcher in _watchers.values():
+        watcher.cancel()
+    _watchers.clear()
