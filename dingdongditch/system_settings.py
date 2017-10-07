@@ -117,6 +117,9 @@ FIREBASE_KEY_PATH = Env.string('DDD_FIREBASE_KEY_PATH', '/home/pi/.firebasekey')
 # Firebase web API key
 FIREBASE_API_KEY = Env.string('DDD_FIREBASE_API_KEY')
 
+# Firebase Cloud Messaging Server Key
+FIREBASE_FCM_KEY = Env.string('DDD_FIREBASE_FCM_KEY')
+
 
 ##
 ## Unit configuration
