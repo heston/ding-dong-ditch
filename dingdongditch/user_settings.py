@@ -95,7 +95,7 @@ def get_unit_by_id(unit_id):
     if data and unit_id in data:
         unit_data = data[unit_id]
         should_ring_bell = unit_data.get('chime', 1)
-        recipients = list((unit_data.get('recipients') or {}).keys())
+        recipients = unit_data.get('recipients') or {}
         return Unit(
             should_ring_bell=should_ring_bell,
             recipients=recipients

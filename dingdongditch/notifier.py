@@ -16,7 +16,7 @@ PUSH_MSG_TITLE = 'Ding Dong'
 PUSH_MSG_BODY = 'Your doorbell is rining!'
 
 
-def RecipientType(Enum):
+class RecipientType(Enum):
     PHONE = 1
     PUSH = 2
 
@@ -32,10 +32,10 @@ def notify(unit_id, number, recipient_type):
     logger.info('Notifying unit "%s" recipient: %s', unit_id, number)
 
     if recipient_type == RecipientType.PHONE.value:
-        notify_by_phone(unit_id, number)
+        return notify_by_phone(unit_id, number)
 
     if recipient_type == RecipientType.PUSH.value:
-        notify_by_push(unit_id, number)
+        return notify_by_push(unit_id, number)
 
     else:
         logger.error(
@@ -44,6 +44,7 @@ def notify(unit_id, number, recipient_type):
             number,
             unit_id
         )
+        return False
 
 
 def notify_by_phone(unit_id, number):
