@@ -74,7 +74,7 @@ def notify_by_push(unit_id, token):
         )
         result = response['results'][0]
         if result.get('error'):
-            raise FCMError(actual_result['error'])
+            raise FCMError(result['error'])
     except Exception as e:
         logger.exception('Failed to notify recipient: %s. Error: %s', token, e)
         return False
