@@ -1,4 +1,5 @@
 from enum import Enum
+from functools import lru_cache
 import logging
 
 from pyfcm import FCMNotification
@@ -9,11 +10,21 @@ from . import action, system_settings, user_settings
 
 logger = logging.getLogger(__name__)
 
-twilio_client = Client(system_settings.TWILIO_SID, system_settings.TWILIO_TOKEN)
-push_service = FCMNotification(api_key=system_settings.FIREBASE_FCM_KEY)
-
 PUSH_MSG_TITLE = 'Ding Dong'
-PUSH_MSG_BODY = 'Your doorbell is rining!'
+PUSH_MSG_BODY = 'Your doorbell is ringing!'
+
+
+@lru_cache()
+def get_push_service(api_key=None):
+    return FCMNotification(api_key=api_key or system_settings.FIREBASE_FCM_KEY)
+
+
+@lru_cache()
+def get_twilio_client(sid=None, token=None):
+    return Client(
+        sid or system_settings.TWILIO_SID,
+        token or system_settings.TWILIO_TOKEN
+    )
 
 
 class RecipientType(Enum):
@@ -50,7 +61,7 @@ def notify(unit_id, number, recipient_type):
 def notify_by_phone(unit_id, number):
     try:
         logger.info('Notifying unit "%s" by phone "%s"', unit_id, number)
-        call = twilio_client.calls.create(
+        call = get_twilio_client().calls.create(
             to=number,
             from_=system_settings.FROM_NUMBER,
             url=get_twiml_url(unit_id),
@@ -68,7 +79,7 @@ def notify_by_phone(unit_id, number):
 def notify_by_push(unit_id, token):
     logger.info('Notifying unit "%s" by push "%s"', unit_id, token)
     try:
-        response = push_service.notify_single_device(
+        response = get_push_service().notify_single_device(
             registration_id=token,
             message_title=PUSH_MSG_TITLE,
             message_body=PUSH_MSG_BODY

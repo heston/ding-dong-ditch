@@ -16,8 +16,3 @@ def settings():
 
     for k, v in original_settings.items():
         setattr(system_settings, k, v)
-
-
-@pytest.fixture(autouse=True)
-def pyfcm(mocker):
-    return mocker.patch('pyfcm.FCMNotification')
