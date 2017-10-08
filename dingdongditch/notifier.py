@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import IntEnum
 from functools import lru_cache
 import logging
 
@@ -27,7 +27,7 @@ def get_twilio_client(sid=None, token=None):
     )
 
 
-class RecipientType(Enum):
+class RecipientType(IntEnum):
     PHONE = 1
     PUSH = 2
 
@@ -39,20 +39,20 @@ def get_twiml_url(unit_id):
     )
 
 
-def notify(unit_id, number, recipient_type):
-    logger.info('Notifying unit "%s" recipient: %s', unit_id, number)
+def notify(unit_id, recipient, recipient_type):
+    logger.info('Notifying unit "%s" recipient: %s', unit_id, recipient)
 
-    if recipient_type == RecipientType.PHONE.value:
-        return notify_by_phone(unit_id, number)
+    if recipient_type == RecipientType.PHONE:
+        return notify_by_phone(unit_id, recipient)
 
-    if recipient_type == RecipientType.PUSH.value:
-        return notify_by_push(unit_id, number)
+    if recipient_type == RecipientType.PUSH:
+        return notify_by_push(unit_id, recipient)
 
     else:
         logger.error(
-            'Unknown recipient type "%s" for number "%s" in unit "%s"',
+            'Unknown recipient type "%s" for "%s" in unit "%s"',
             recipient_type,
-            number,
+            recipient,
             unit_id
         )
         return False

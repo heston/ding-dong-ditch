@@ -199,7 +199,7 @@ def test__notify__recipient_type__phone(mocker):
 
     notifier.notify('1234', '+14155551001', 1)
 
-    assert notify_by_phone_mock.called
+    notify_by_phone_mock.assert_called_with('1234', '+14155551001')
     assert not log_mock.error.called
     assert not notify_by_push_mock.called
 
@@ -211,7 +211,7 @@ def test__notify__recipient_type__push(mocker):
 
     notifier.notify('1234', 'asdf1234=', 2)
 
-    assert notify_by_push_mock.called
+    notify_by_push_mock.assert_called_with('1234', 'asdf1234=')
     assert not notify_by_phone_mock.called
     assert not log_mock.error.called
 
