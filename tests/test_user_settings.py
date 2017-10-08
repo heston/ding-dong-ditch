@@ -185,7 +185,7 @@ def test_get_unit_by_id__valid_unit__defaults(get_data):
     result = user_settings.get_unit_by_id(1234)
 
     assert result.should_ring_bell == 1
-    assert isinstance(result.recipients, list)
+    assert isinstance(result.recipients, dict)
     assert len(result.recipients) == 0
 
 
@@ -222,19 +222,7 @@ def test_get_unit_by_id__valid_unit__empty_recipients(get_data):
 
     result = user_settings.get_unit_by_id(1234)
 
-    assert isinstance(result.recipients, list)
-
-
-def test_get_unit_by_id__valid_unit__empty_recipients(get_data):
-    get_data.return_value = {
-        '1234': {
-            'recipients': None
-        }
-    }
-
-    result = user_settings.get_unit_by_id(1234)
-
-    assert isinstance(result.recipients, list)
+    assert isinstance(result.recipients, dict)
 
 
 def test_get_unit_by_id__valid_unit__recipients(get_data):
@@ -242,14 +230,14 @@ def test_get_unit_by_id__valid_unit__recipients(get_data):
         '1234': {
             'recipients': {
                 '+14155551001': 1,
-                '+14155551002': 2,
+                'asdf1234=': 2,
             }
         }
     }
 
     result = user_settings.get_unit_by_id(1234)
 
-    assert result.recipients == [
-        '+14155551001',
-        '+14155551002',
-    ]
+    assert result.recipients == {
+        '+14155551001': 1,
+        'asdf1234=': 2,
+    }
