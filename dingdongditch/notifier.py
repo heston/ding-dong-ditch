@@ -81,8 +81,10 @@ def notify_by_push(unit_id, token):
     try:
         response = get_push_service().notify_single_device(
             registration_id=token,
-            message_title=PUSH_MSG_TITLE,
-            message_body=PUSH_MSG_BODY
+            data_message={
+                'title': PUSH_MSG_TITLE,
+                'body': PUSH_MSG_BODY,
+            }
         )
         result = response['results'][0]
         if result.get('error'):

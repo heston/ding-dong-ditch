@@ -38,8 +38,10 @@ def test__notify_by_push__success(mocker):
 
     service_mock.notify_single_device.assert_called_with(
         registration_id='asdf1234=',
-        message_title=notifier.PUSH_MSG_TITLE,
-        message_body=notifier.PUSH_MSG_BODY
+        data_message={
+            'title': notifier.PUSH_MSG_TITLE,
+            'body': notifier.PUSH_MSG_BODY,
+        }
     )
     log_mock.info.assert_any_call(
         'Notifying unit "%s" by push "%s"', '1234', 'asdf1234='
