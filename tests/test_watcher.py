@@ -7,6 +7,11 @@ from dingdongditch import watcher
 
 
 @pytest.fixture
+def log_mock(mocker):
+    return mocker.patch('dingdongditch.watcher.logger')
+
+
+@pytest.fixture
 def timer_fake(mocker):
     return  mocker.patch('dingdongditch.watcher.Timer')
 
@@ -27,7 +32,7 @@ def test_Watcher_init(watcher_stub, timer_fake):
 def test_Watcher_start(watcher_stub, timer_fake):
     watcher_stub.start()
 
-    assert watcher_stub.should_cancel is False
+    assert watcher_stub._should_cancel is False
     assert watcher_stub.running is True
     assert timer_fake.called
     assert timer_fake.return_value.start.called
@@ -36,38 +41,48 @@ def test_Watcher_start(watcher_stub, timer_fake):
 def test_Watcher_cancel(watcher_stub):
     watcher_stub.cancel()
 
-    assert watcher_stub.should_cancel is True
+    assert watcher_stub._should_cancel is True
+
+
+def test_Watcher_cannot_start_after_cancel(watcher_stub, log_mock):
+    watcher_stub.cancel()
+    watcher_stub.start()
+
+    log_mock.warning.assert_called_with(
+        'Cannot start cancelled watcher: %s',
+        id(watcher_stub)
+    )
 
 
 def test_Watcher_action__not_stale(mocker, watcher_stub):
-    watcher_stub.should_update.return_value = False
+    watcher_stub._should_update.return_value = False
     watcher_stub.start = mocker.Mock()
-    watcher_stub.should_cancel = False
+    watcher_stub._should_cancel = False
     watcher_stub._action()
 
-    assert watcher_stub.should_update.called
-    assert not watcher_stub.update_func.called
+    assert watcher_stub._should_update.called
+    assert not watcher_stub._update_func.called
     assert watcher_stub.start.called
 
 
 def test_Watcher_action__stale(mocker, watcher_stub):
-    watcher_stub.should_update.return_value = True
+    watcher_stub._should_update.return_value = True
     watcher_stub.start = mocker.Mock()
-    watcher_stub.should_cancel = False
+    watcher_stub._should_cancel = False
     watcher_stub._action()
 
-    assert watcher_stub.should_update.called
-    assert watcher_stub.update_func.called
+    assert watcher_stub._should_update.called
+    assert watcher_stub._update_func.called
     assert watcher_stub.start.called
 
 
 def test_Watcher_action__should_cancel(mocker, watcher_stub):
     watcher_stub.start = mocker.Mock()
-    watcher_stub.should_cancel = True
+    watcher_stub._should_cancel = True
     watcher_stub._action()
 
-    assert not watcher_stub.should_update.called
-    assert not watcher_stub.update_func.called
+    assert not watcher_stub._should_update.called
+    assert not watcher_stub._update_func.called
     assert not watcher_stub.start.called
 
 

@@ -11,31 +11,44 @@ logger = logging.getLogger(__name__)
 
 class Watcher:
     def __init__(self, should_update, update_func, interval=None):
-        self.should_update = should_update
-        self.update_func = update_func
-        self.interval = DEFAULT_INTERVAL if interval is None else interval
+        self._should_update = should_update
+        self._update_func = update_func
+        self._interval = DEFAULT_INTERVAL if interval is None else interval
+        self._should_cancel = False
         self.running = False
 
     def start(self):
-        self.should_cancel = False
-        self._timer = Timer(self.interval.total_seconds(), self._action)
+        if self._should_cancel:
+            logger.warning('Cannot start cancelled watcher: %s', id(self))
+            return
+
+        self._timer = Timer(self._interval.total_seconds(), self._action)
         self._timer.start()
         self.running = True
 
     def _action(self):
-        if self.should_cancel:
+        if self._should_cancel:
+            logger.debug('Stopping cancelled watcher: %s', id(self))
             self.running = False
             return
 
-        logger.debug('Checking if update is required: %s', self.should_update)
-        if self.should_update():
-            logger.debug('Required update detected. Updating: %s', self.update_func)
-            self.update_func()
+        logger.debug(
+            'Watcher (%s) checking if update is requested: %s',
+            id(self),
+            self._should_update
+        )
+        if self._should_update():
+            logger.debug(
+                'Update requested. Watcher (%s) updating: %s',
+                id(self),
+                self._update_func
+            )
+            self._update_func()
         # Start a new timer
         self.start()
 
     def cancel(self):
-        self.should_cancel = True
+        self._should_cancel = True
 
 
 def watch(name, should_update, update_func, interval=None):
@@ -59,9 +72,9 @@ def watch(name, should_update, update_func, interval=None):
 def cancel(name):
     if name not in _watchers:
         return None
-    logger.debug('Stopping watcher %s', name)
     watcher = _watchers[name]
     if watcher:
+        logger.debug('Cancelling watcher: %s (%s)', name, id(watcher))
         watcher.cancel()
     del _watchers[name]
     return True
