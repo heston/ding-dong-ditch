@@ -39,14 +39,14 @@ def get_twiml_url(unit_id):
     )
 
 
-def notify(unit_id, recipient, recipient_type):
+def notify(unit_id, recipient, recipient_type, event_id=None):
     logger.info('Notifying unit "%s" recipient: %s', unit_id, recipient)
 
     if recipient_type == RecipientType.PHONE:
         return notify_by_phone(unit_id, recipient)
 
     if recipient_type == RecipientType.PUSH:
-        return notify_by_push(unit_id, recipient)
+        return notify_by_push(unit_id, recipient, event_id)
 
     else:
         logger.error(
@@ -76,7 +76,7 @@ def notify_by_phone(unit_id, number):
         return call.sid
 
 
-def notify_by_push(unit_id, token):
+def notify_by_push(unit_id, token, event_id=None):
     logger.info('Notifying unit "%s" by push "%s"', unit_id, token)
     try:
         response = get_push_service().notify_single_device(
@@ -84,6 +84,7 @@ def notify_by_push(unit_id, token):
             data_message={
                 'title': PUSH_MSG_TITLE,
                 'body': PUSH_MSG_BODY,
+                'event_id': event_id,
             }
         )
         result = response['results'][0]
@@ -104,7 +105,7 @@ def ring(unit_id):
     action_unit.bell.ring()
 
 
-def notify_recipients(unit_id):
+def notify_recipients(unit_id, event_id=None):
     sys_unit = system_settings.get_unit_by_id(unit_id)
     if not sys_unit:
         logger.warning('Unknown unit id: %s', unit_id)
@@ -121,7 +122,7 @@ def notify_recipients(unit_id):
     # notify everyone and track failures
     # TODO: Run each request in a separate thread
     failures = [
-        not notify(unit_id, recipient, recipient_type) for
+        not notify(unit_id, recipient, recipient_type, event_id) for
         (recipient, recipient_type) in
         usr_unit.recipients.items()
     ]

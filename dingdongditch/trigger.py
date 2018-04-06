@@ -5,7 +5,7 @@ import signal
 
 import blinker
 
-from . import action, notifier, system_settings, user_settings
+from . import action, events, notifier, system_settings, user_settings
 
 WINDOW = datetime.timedelta(seconds=system_settings.BUZZER_INTERVAL)
 logger = logging.getLogger(__name__)
@@ -39,13 +39,15 @@ def throttle(window):
 @throttle(WINDOW)
 def trigger_unit_1():
     logger.debug('Trigger activated for unit 1')
-    notifier.notify_recipients(action.UNIT_1.id)
+    event_id = events.record_event(action.UNIT_1.id)
+    notifier.notify_recipients(action.UNIT_1.id, event_id)
 
 
 @throttle(WINDOW)
 def trigger_unit_2():
     logger.debug('Trigger activated for unit 2')
-    notifier.notify_recipients(action.UNIT_2.id)
+    event_id = events.record_event(action.UNIT_2.id)
+    notifier.notify_recipients(action.UNIT_2.id, event_id)
 
 
 def get_strike_setting_path(unit_id):
