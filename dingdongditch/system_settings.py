@@ -64,6 +64,9 @@ BUZZER_HOLD = Env.number('DDD_BUZZER_HOLD', 0.3)
 # Whether to always ring the bell, regardless of user setting, when the network is down
 RING_FALLBACK = Env.boolean('DDD_RING_FALLBACK', True)
 
+# The duration the strike should stay open when released, in seconds.
+STRIKE_RELEASE_DURATION = Env.number('DDD_STRIKE_RELEASE_DURATION', 3)
+
 
 ##
 ## Unit 1

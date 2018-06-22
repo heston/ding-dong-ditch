@@ -56,7 +56,7 @@ def handle_gate_strike_unit_1(sender, value=None):
     if not value:
         return
     logger.info('Gate strike activated for unit 1')
-    action.UNIT_1.strike.release()
+    action.UNIT_1.strike.release(system_settings.STRIKE_RELEASE_DURATION)
     user_settings.set_data(get_strike_setting_path(action.UNIT_1.id), 0)
 
 
@@ -64,7 +64,7 @@ def handle_gate_strike_unit_2(sender, value=None):
     if not value:
         return
     logger.info('Gate strike activated for unit 2')
-    action.UNIT_2.strike.release()
+    action.UNIT_2.strike.release(system_settings.STRIKE_RELEASE_DURATION)
     user_settings.set_data(get_strike_setting_path(action.UNIT_2.id), 0)
 
 
