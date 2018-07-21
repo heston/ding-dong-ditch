@@ -31,7 +31,7 @@ def get_data():
         logger.exception(
             'Could not load user settings from adapter "%s": %s', adapter.NAME, e
         )
-        return None
+        raise
 
 
 def set_data(key, data, root='settings'):
@@ -44,6 +44,7 @@ def set_data(key, data, root='settings'):
         logger.exception(
             'Could not set user settings with adapter "%s": %s', adapter.NAME, e
         )
+        raise
 
 
 def init_system_data():
