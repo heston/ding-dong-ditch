@@ -32,7 +32,7 @@ def test_get_adapter__valid(settings):
     assert adapter is firebase_user_settings_adapter
 
 
-def test_get_data__error(adapter):
+def test_get_data__error(adapter, mocker):
     adapter.get_settings.side_effect = TypeError
     logger_mock = mocker.patch('dingdongditch.user_settings.logger')
 
