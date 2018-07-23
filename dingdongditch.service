@@ -6,6 +6,8 @@ After=multi-user.target
 Type=idle
 WorkingDirectory={{DIR}}
 ExecStart=/usr/bin/make run
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target

@@ -32,11 +32,14 @@ def test_get_adapter__valid(settings):
     assert adapter is firebase_user_settings_adapter
 
 
-def test_get_data__error(adapter):
+def test_get_data__error(adapter, mocker):
     adapter.get_settings.side_effect = TypeError
+    logger_mock = mocker.patch('dingdongditch.user_settings.logger')
 
-    result = user_settings.get_data()
-    assert result is None
+    with pytest.raises(TypeError):
+        user_settings.get_data()
+
+    assert logger_mock.exception.called
 
 
 def test_get_data__valid(adapter):
@@ -50,7 +53,8 @@ def test_set_data__error(adapter, mocker):
     adapter.set_data.side_effect = TypeError
     logger_mock = mocker.patch('dingdongditch.user_settings.logger')
 
-    user_settings.set_data('foo', 'bar')
+    with pytest.raises(TypeError):
+        user_settings.set_data('foo', 'bar')
 
     assert logger_mock.exception.called
 
