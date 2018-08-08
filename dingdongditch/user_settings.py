@@ -3,7 +3,6 @@ import logging
 
 from . import system_settings as settings
 from . import firebase_user_settings_adapter
-from . import watcher
 
 ADAPTERS = {
     'firebase': firebase_user_settings_adapter
@@ -64,9 +63,7 @@ def init_user_data():
         path = '{}/strike'.format(settings.UNIT_2.id)
         set_data(path, 0)
 
-    data = get_data()
-    watcher.watch(id(data), data.is_stale, reset)
-    return data
+    return get_data()
 
 
 def init_data():
@@ -75,13 +72,11 @@ def init_data():
 
 
 def reset():
-    data = get_data()
     adapter = get_adapter()
     logger.debug(
         'Resetting adapter "%s."',
         adapter.NAME
     )
-    watcher.cancel(id(data))
     adapter.reset()
     return init_user_data()
 
