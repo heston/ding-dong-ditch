@@ -33,7 +33,13 @@ def get_data():
         raise
 
 
-def set_data(key, data, root='settings'):
+def set_data(path, data, root=None):
+    root_path = root or ROOT_PATH
+    abs_path = os.path.join(root_path, path)
+    live_data.set_data(abs_path, data)
+
+
+def set_data(key, data, root=None):
     adapter = get_adapter()
     logger.info('Setting user settings with adapter "%s"', adapter.NAME)
 

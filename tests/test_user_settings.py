@@ -62,7 +62,7 @@ def test_set_data__error(adapter, mocker):
 def test_set_data__default_root(adapter):
     user_settings.set_data('foo', 'bar')
 
-    adapter.set_data.assert_called_with('foo', 'bar', 'settings')
+    adapter.set_data.assert_called_with('foo', 'bar', None)
 
 
 def test_set_data__custom_root(adapter):
@@ -97,22 +97,20 @@ def test_init_system_data__dual_units(mocker, settings, set_data):
     )
 
 
-def test_init_user_data__single_unit(mocker, settings, set_data):
+def test_init_user_data__single_unit(mocker, settings, set_data, get_data):
     settings(UNIT_1=mocker.Mock(id='1111'))
-    watch = mocker.patch('dingdongditch.watcher.watch')
 
     user_settings.init_user_data()
 
     set_data.assert_called_with('1111/strike', 0)
-    assert watch.called
+    assert get_data.called
 
 
-def test_init_user_data__dual_units(mocker, settings, set_data):
+def test_init_user_data__dual_units(mocker, settings, set_data, get_data):
     settings(
         UNIT_1=mocker.Mock(id='1111'),
         UNIT_2=mocker.Mock(id='2222')
     )
-    watch = mocker.patch('dingdongditch.watcher.watch')
 
     user_settings.init_user_data()
 
@@ -120,6 +118,7 @@ def test_init_user_data__dual_units(mocker, settings, set_data):
         mocker.call('1111/strike', 0),
         mocker.call('2222/strike', 0)
     ])
+    assert get_data.called
 
 
 def test_init_data(mocker):
@@ -134,11 +133,9 @@ def test_init_data(mocker):
 
 def test_reset(mocker, adapter, get_data):
     init_user_data = mocker.patch('dingdongditch.user_settings.init_user_data')
-    cancel = mocker.patch('dingdongditch.watcher.cancel')
 
     user_settings.reset()
 
-    assert cancel.called
     assert adapter.reset.called
     assert init_user_data.called
 

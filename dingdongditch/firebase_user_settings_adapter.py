@@ -30,8 +30,9 @@ def get_settings():
     return live_data.get_data()
 
 
-def set_data(path, data, root=ROOT_PATH):
-    abs_path = os.path.join(root, path)
+def set_data(path, data, root=None):
+    root_path = root or ROOT_PATH
+    abs_path = os.path.join(root_path, path)
     live_data.set_data(abs_path, data)
 
 
