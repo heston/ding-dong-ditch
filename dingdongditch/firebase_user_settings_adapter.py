@@ -28,7 +28,7 @@ live_data = LiveData(firebase_app, ROOT_PATH, TTL)
 
 
 def get_settings():
-    return live_data.get_data(SETTINGS_PATH)
+    return live_data.get_data().get(SETTINGS_PATH)
 
 
 def set_data(path, data, root=None):
