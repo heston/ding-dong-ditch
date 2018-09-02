@@ -47,7 +47,7 @@ def trigger_unit_2():
 
 
 def get_strike_setting_path(unit_id):
-    return '/{}/strike'.format(unit_id)
+    return '{}/{}/strike'.format(system_settings.USER_SETTINGS_PATH, unit_id)
 
 
 def handle_gate_strike_unit_1(sender, value=None):
