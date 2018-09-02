@@ -13,7 +13,6 @@ AUTH_DOMAIN = '{}.firebaseapp.com'.format(settings.FIREBASE_APP_NAME)
 STORAGE_BUCKET = '{}.appspot.com'.format(settings.FIREBASE_APP_NAME)
 TTL = datetime.timedelta(hours=2)
 ROOT_PATH = '/'
-SETTINGS_PATH = '/settings'
 
 firebase_config = {
     'apiKey': settings.FIREBASE_API_KEY,
@@ -28,11 +27,11 @@ live_data = LiveData(firebase_app, ROOT_PATH, TTL)
 
 
 def get_settings():
-    return live_data.get_data().get(SETTINGS_PATH)
+    return live_data.get_data().get(settings.USER_SETTINGS_PATH)
 
 
 def set_data(path, data, root=None):
-    default_path = root or SETTINGS_PATH
+    default_path = root or settings.USER_SETTINGS_PATH
     abs_path = os.path.join(default_path, path)
     live_data.set_data(abs_path, data)
 

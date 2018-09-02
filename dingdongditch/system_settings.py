@@ -123,6 +123,9 @@ FIREBASE_API_KEY = Env.string('DDD_FIREBASE_API_KEY')
 # Firebase Cloud Messaging Server Key
 FIREBASE_FCM_KEY = Env.string('DDD_FIREBASE_FCM_KEY')
 
+# Root path for user settings in adapter
+USER_SETTINGS_PATH = '/settings'
+
 
 ##
 ## Unit configuration
