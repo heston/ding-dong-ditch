@@ -48,7 +48,7 @@ def set_data(key, data, root=None):
 
 def signal(*args, **kwargs):
     adapter = get_adapter()
-    adapter.signal(*args, **kwargs)
+    return adapter.signal(*args, **kwargs)
 
 
 def init_system_data():

@@ -38,7 +38,7 @@ def set_data(path, data, root=None):
 
 
 def signal(*args, **kwargs):
-    live_data.signal(*args, **kwargs)
+    return live_data.signal(*args, **kwargs)
 
 
 def reset():
