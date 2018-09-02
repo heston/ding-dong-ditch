@@ -46,6 +46,11 @@ def set_data(key, data, root=None):
         raise
 
 
+def signal(*args, **kwargs):
+    adapter = get_adapter()
+    adapter.signal(*args, **kwargs)
+
+
 def init_system_data():
     data = {
         settings.UNIT_1.id: 1,

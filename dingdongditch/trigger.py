@@ -3,8 +3,6 @@ import functools
 import logging
 import signal
 
-import blinker
-
 from . import action, notifier, system_settings, user_settings
 
 WINDOW = datetime.timedelta(seconds=system_settings.BUZZER_INTERVAL)
@@ -71,7 +69,7 @@ def handle_gate_strike_unit_2(sender, value=None):
 if action.UNIT_1:
     action.UNIT_1.buzzer.when_held = trigger_unit_1
     action.UNIT_1.buzzer.when_pressed = lambda: logger.debug('Trigger pressed for unit 1')
-    blinker.signal(
+    user_settings.signal(
         get_strike_setting_path(action.UNIT_1.id)
     ).connect(handle_gate_strike_unit_1)
 
@@ -79,7 +77,7 @@ if action.UNIT_1:
 if action.UNIT_2:
     action.UNIT_2.buzzer.when_held = trigger_unit_2
     action.UNIT_2.buzzer.when_pressed = lambda: logger.debug('Trigger pressed for unit 2')
-    blinker.signal(
+    user_settings.signal(
         get_strike_setting_path(action.UNIT_2.id)
     ).connect(handle_gate_strike_unit_2)
 
