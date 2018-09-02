@@ -38,6 +38,12 @@ class Test_set_data:
         live_data.set_data.assert_called_with('/settings/foo', data)
 
 
+def test_signal(live_data):
+    firebase_user_settings_adapter.signal('foo', bar='baz')
+
+    live_data.signal.assert_called_with('foo', bar='baz')
+
+
 def test_hangup(live_data):
     firebase_user_settings_adapter.hangup()
 

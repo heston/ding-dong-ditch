@@ -71,6 +71,12 @@ def test_set_data__custom_root(adapter):
     adapter.set_data.assert_called_with('foo', 'bar', 'baz')
 
 
+def test_signal(adapter):
+    user_settings.signal('foo', bar='baz')
+
+    adapter.signal.assert_called_with('foo', bar='baz')
+
+
 def test_init_system_data__single_unit(mocker, settings, set_data):
     settings(UNIT_1=mocker.Mock(id='1111'))
 
