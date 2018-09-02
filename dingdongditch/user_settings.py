@@ -47,7 +47,7 @@ def set_data(key, data, root=None):
 
 
 def signal(*args, **kwargs):
-    adpater = self.get_adapter()
+    adpater = get_adapter()
     adapter.signal(*args, **kwargs)
 
 
