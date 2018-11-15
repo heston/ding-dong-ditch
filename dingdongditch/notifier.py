@@ -136,7 +136,6 @@ def notify_recipients(unit_id):
     # True means the notification succeeded. False means it failed.
     failures = [not f.result() for f in futures.as_completed(all_futures)]
 
-
     # If all notifications failed, fallback to normal bell, if enabled
     if usr_unit.recipients and all(failures):
         logger.error('All notifications failed!')
