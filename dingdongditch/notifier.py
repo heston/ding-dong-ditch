@@ -1,3 +1,4 @@
+from concurrent import futures
 from enum import IntEnum
 from functools import lru_cache
 import logging
@@ -12,6 +13,8 @@ logger = logging.getLogger(__name__)
 
 PUSH_MSG_TITLE = 'Ding Dong'
 PUSH_MSG_BODY = 'Your doorbell is ringing!'
+
+executor = futures.ThreadPoolExecutor(max_workers=5)
 
 
 @lru_cache()
@@ -37,6 +40,10 @@ def get_twiml_url(unit_id):
         system_settings.FIREBASE_CLOUD_FUNCTION_NOTIFY_URL,
         unit_id
     )
+
+
+def notify_with_future(unit_id, recipient, recipient_type):
+    return executor.submit(notify, unit_id, recipient, recipient_type)
 
 
 def notify(unit_id, recipient, recipient_type):
@@ -118,13 +125,17 @@ def notify_recipients(unit_id):
     if usr_unit.should_ring_bell:
         ring(unit_id)
 
-    # notify everyone and track failures
-    # TODO: Run each request in a separate thread
-    failures = [
-        not notify(unit_id, recipient, recipient_type) for
+    # notify everyone at once
+    all_futures = [
+        notify_with_future(unit_id, recipient, recipient_type) for
         (recipient, recipient_type) in
         usr_unit.recipients.items()
     ]
+
+    # Gather all results, as they complete.
+    # True means the notification succeeded. False means it failed.
+    failures = [not f.result() for f in futures.as_completed(all_futures)]
+
 
     # If all notifications failed, fallback to normal bell, if enabled
     if usr_unit.recipients and all(failures):
