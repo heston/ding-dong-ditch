@@ -72,7 +72,7 @@ test: test_server test_client
 
 .PHONY: test_ci
 test_ci: test_server
-	PYTHONPATH=.:./tests/mocks py.test tests
+	PYTHONPATH=.:./tests/mocks py.test --cov=dingdongditch tests
 
 .PHONY: lint_ci
 lint_ci:
