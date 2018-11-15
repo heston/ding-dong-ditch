@@ -17,7 +17,7 @@ LOG_PATH = Env.string('DDD_LOG_PATH', os.path.dirname(__file__))
 LOG_FILE = Env.string('DDD_LOG_FILE', 'ding-dong-ditch.log')
 
 basicConfig_args = dict(
-    format='[%(asctime)s] %(levelname)s %(name)s: %(message)s',
+    format='[%(asctime)s] %(levelname)s %(name)s (%(thread)d): %(message)s',
     level=LOG_LEVEL
 )
 
