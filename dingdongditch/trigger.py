@@ -10,6 +10,7 @@ LAST_SEEN_AT_KEY = 'lastSeenAt'
 
 logger = logging.getLogger(__name__)
 
+
 def throttle(window):
     def wrapper(func):
         state = {
