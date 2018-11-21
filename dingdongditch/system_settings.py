@@ -126,6 +126,8 @@ FIREBASE_FCM_KEY = Env.string('DDD_FIREBASE_FCM_KEY')
 # Root path for user settings in adapter
 USER_SETTINGS_PATH = '/settings'
 
+# Path to system-level settings in adapter
+SYSTEM_SETTINGS_PATH = '/systemSettings'
 
 ##
 ## Unit configuration

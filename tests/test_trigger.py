@@ -1,4 +1,16 @@
+from datetime import datetime
+
+import pytest
+
 from dingdongditch import system_settings, trigger
+
+
+@pytest.fixture
+def utcnow(mocker):
+    now = datetime.utcnow()
+    datetime_mock = mocker.patch('dingdongditch.trigger.datetime')
+    datetime_mock.datetime.utcnow.return_value = now
+    return now
 
 
 def test_trigger_unit_1(mocker):
@@ -19,3 +31,22 @@ def test_trigger_unit_2(mocker):
     trigger.trigger_unit_2()
 
     notify_mock.assert_called_with(2)
+
+
+def test_get_last_updated_path():
+    path = trigger.get_last_updated_path()
+
+    assert path == '/systemSettings/lastSeenAt'
+
+
+def test_handle_last_updated(mocker, utcnow):
+    mocker.patch('dingdongditch.trigger.get_last_updated_path').return_value = '/foo'
+    set_data_mock = mocker.patch('dingdongditch.user_settings.set_data')
+
+    trigger.handle_last_updated()
+
+    set_data_mock.assert_called_with(
+        '/foo',
+        utcnow,
+        root='/'
+    )
