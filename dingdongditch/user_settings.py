@@ -57,7 +57,7 @@ def init_system_data():
     }
     if settings.UNIT_2.id:
         data[settings.UNIT_2.id] = 1
-    set_data('units', data, 'systemSettings')
+    set_data('units', data, settings.SYSTEM_SETTINGS_PATH)
 
 
 def init_user_data():

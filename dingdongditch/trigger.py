@@ -6,6 +6,8 @@ import signal
 from . import action, notifier, system_settings, user_settings
 
 WINDOW = datetime.timedelta(seconds=system_settings.BUZZER_INTERVAL)
+LAST_SEEN_AT_KEY = 'lastSeenAt'
+
 logger = logging.getLogger(__name__)
 
 
@@ -66,6 +68,15 @@ def handle_gate_strike_unit_2(sender, value=None):
     user_settings.set_data(get_strike_setting_path(action.UNIT_2.id), 0, root='/')
 
 
+def get_last_updated_path():
+    return '{}/{}'.format(system_settings.SYSTEM_SETTINGS_PATH, LAST_SEEN_AT_KEY)
+
+
+def handle_last_updated():
+    user_settings.set_data(get_last_updated_path(), datetime.datetime.utcnow(), root='/')
+
+
+# Set up UNIT 1
 if action.UNIT_1:
     action.UNIT_1.buzzer.when_held = trigger_unit_1
     action.UNIT_1.buzzer.when_pressed = lambda: logger.debug('Trigger pressed for unit 1')
@@ -74,12 +85,17 @@ if action.UNIT_1:
     ).connect(handle_gate_strike_unit_1)
 
 
+# Set up UNIT 2
 if action.UNIT_2:
     action.UNIT_2.buzzer.when_held = trigger_unit_2
     action.UNIT_2.buzzer.when_pressed = lambda: logger.debug('Trigger pressed for unit 2')
     user_settings.signal(
         get_strike_setting_path(action.UNIT_2.id)
     ).connect(handle_gate_strike_unit_2)
+
+
+# Set last updated timestamp
+user_settings.signal(system_settings.USER_SETTINGS_PATH).connect(handle_last_updated)
 
 
 def run():

@@ -82,7 +82,7 @@ def test_init_system_data__single_unit(mocker, settings, set_data):
 
     user_settings.init_system_data()
 
-    set_data.assert_called_with('units', { '1111': 1}, 'systemSettings')
+    set_data.assert_called_with('units', { '1111': 1}, '/systemSettings')
 
 
 def test_init_system_data__dual_units(mocker, settings, set_data):
@@ -99,7 +99,7 @@ def test_init_system_data__dual_units(mocker, settings, set_data):
             '1111': 1,
             '2222': 1,
         },
-        'systemSettings'
+        '/systemSettings'
     )
 
 
