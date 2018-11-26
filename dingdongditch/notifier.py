@@ -2,6 +2,7 @@ from concurrent import futures
 from enum import IntEnum
 from functools import lru_cache
 import logging
+from operator import itemgetter
 
 from pyfcm import FCMNotification
 from pyfcm.errors import FCMError
@@ -111,6 +112,10 @@ def ring(unit_id):
     action_unit.bell.ring()
 
 
+def _get_sorted_recipients(recipients):
+    return sorted(recipients.items(), key=itemgetter(1), reverse=True)
+
+
 def notify_recipients(unit_id):
     sys_unit = system_settings.get_unit_by_id(unit_id)
     if not sys_unit:
@@ -129,7 +134,7 @@ def notify_recipients(unit_id):
     all_futures = [
         notify_with_future(unit_id, recipient, recipient_type) for
         (recipient, recipient_type) in
-        usr_unit.recipients.items()
+        _get_sorted_recipients(usr_unit.recipients)
     ]
 
     # Gather all results, as they complete.

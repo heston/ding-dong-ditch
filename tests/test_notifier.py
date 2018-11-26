@@ -242,3 +242,16 @@ def test_notify_with_future(mocker):
         'asdf1234=',
         2
     )
+
+
+def test_get_sorted_recipients():
+    recipients = {'a': 1, 'b': 2, 'c': 1, 'd': 2}
+
+    result = notifier._get_sorted_recipients(recipients)
+
+    assert result == [
+        ('b', 2),
+        ('d', 2),
+        ('a', 1),
+        ('c', 1),
+    ]
