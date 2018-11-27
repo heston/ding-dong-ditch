@@ -8,7 +8,7 @@ from dingdongditch import system_settings, trigger
 @pytest.fixture
 def now(mocker):
     now = time.time()
-    time_mock = mocker.patch('dingdongditch.time')
+    time_mock = mocker.patch('dingdongditch.trigger.time')
     time_mock.time.return_value = now
     return now
 
