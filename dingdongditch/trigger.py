@@ -1,5 +1,5 @@
-import datetime
 import functools
+import time
 import logging
 import signal
 import sys
@@ -74,7 +74,7 @@ def get_last_updated_path():
 
 
 def handle_last_updated(sender, **kwargs):
-    user_settings.set_data(get_last_updated_path(), datetime.datetime.utcnow(), root='/')
+    user_settings.set_data(get_last_updated_path(), time.time(), root='/')
 
 
 # Set up UNIT 1
