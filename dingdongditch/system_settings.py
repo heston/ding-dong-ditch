@@ -1,5 +1,6 @@
 from collections import namedtuple
 import logging
+import multiprocessing
 import os
 import sys
 
@@ -164,3 +165,14 @@ def get_unit_by_id(unit_id):
     elif unit_id == UNIT_2.id:
         return UNIT_2
     return None
+
+
+##
+## Other configuration
+##
+
+# Number of threads to maintain in the notifier threadpool
+NOTIFIER_THREADPOOL_SIZE = Env.number(
+    'DDD_NOTIFIER_THREADPOOL_SIZE',
+    multiprocessing.cpu_count() * 2
+)
