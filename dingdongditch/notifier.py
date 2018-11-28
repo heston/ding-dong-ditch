@@ -15,7 +15,9 @@ logger = logging.getLogger(__name__)
 PUSH_MSG_TITLE = 'Ding Dong'
 PUSH_MSG_BODY = 'Your doorbell is ringing!'
 
-executor = futures.ThreadPoolExecutor(max_workers=5)
+executor = futures.ThreadPoolExecutor(
+    max_workers=system_settings.NOTIFIER_THREADPOOL_SIZE
+)
 
 
 @lru_cache()
