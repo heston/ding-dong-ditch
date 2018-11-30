@@ -1,22 +1,16 @@
-import datetime
-import hashlib
 import logging
+import uuid
 
 from . import user_settings
 
 logger = logging.getLogger(__name__)
 
-EVENT_NONCE = 'DDD-EVENT'
 DEFAULT_EVENT_NAME = 'doorbell'
 EVENT_ROOT = 'events'
 
 
 def get_event_id():
-    now = datetime.datetime.utcnow()
-    digest = hashlib.sha256()
-    digest.update(EVENT_NONCE.encode('utf-8'))
-    digest.update(str(datetime.datetime.utcnow().timestamp()).encode('utf-8'))
-    return digest.hexdigest()
+    return uuid.uuid4()
 
 
 def get_event_path(unit_id, event_id):
@@ -33,5 +27,5 @@ def record_event(unit_id, event_name=None):
         'name': event_name or DEFAULT_EVENT_NAME
     }
     logger.info('Recording event "%s" for unit %s', event_id, unit_id)
-    user_settings.set_data(event_path, event_payload, root='events')
+    user_settings.set_data(event_path, event_payload, root=EVENT_ROOT)
     return event_id
