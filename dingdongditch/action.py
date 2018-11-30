@@ -10,13 +10,16 @@ class Strike(DigitalOutputDevice):
     """A class to represent an electronic gate strike."""
     _instances = {}
 
-    def release(self, duration=3):
+    DEFAULT_DURATION = 3
+
+    def release(self, duration=None):
         """Release the strike, thus opening the door/gate it is guarding.
 
         Arguments:
-            duration: The duration that the strike should remain open.
+            duration: The duration that the strike should remain open, in seconds.
         """
-        super(Strike, self).blink(on_time=duration, off_time=1, n=1, background=True)
+        on_time = duration or self.DEFAULT_DURATION
+        super(Strike, self).blink(on_time=on_time, off_time=1, n=1, background=True)
 
     @classmethod
     def get(cls, pin=None, *args, **kwargs):

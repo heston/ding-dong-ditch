@@ -1,6 +1,8 @@
+from concurrent import futures
 from enum import IntEnum
 from functools import lru_cache
 import logging
+from operator import itemgetter
 
 from pyfcm import FCMNotification
 from pyfcm.errors import FCMError
@@ -12,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 PUSH_MSG_TITLE = 'Ding Dong'
 PUSH_MSG_BODY = 'Your doorbell is ringing!'
+
+executor = futures.ThreadPoolExecutor(
+    max_workers=system_settings.NOTIFIER_THREADPOOL_SIZE
+)
 
 
 @lru_cache()
@@ -39,7 +45,11 @@ def get_twiml_url(unit_id):
     )
 
 
-def notify(unit_id, recipient, recipient_type, event_id=None):
+def notify_with_future(unit_id, recipient, recipient_type, event_id=None):
+    return executor.submit(notify, unit_id, recipient, recipient_type, event_id)
+
+
+def notify(unit_id, recipient, recipient_type, event_id=None)::
     logger.info('Notifying unit "%s" recipient: %s', unit_id, recipient)
 
     if recipient_type == RecipientType.PHONE:
@@ -105,6 +115,10 @@ def ring(unit_id):
     action_unit.bell.ring()
 
 
+def _get_sorted_recipients(recipients):
+    return sorted(recipients.items(), key=itemgetter(1), reverse=True)
+
+
 def notify_recipients(unit_id, event_id=None):
     sys_unit = system_settings.get_unit_by_id(unit_id)
     if not sys_unit:
@@ -119,13 +133,16 @@ def notify_recipients(unit_id, event_id=None):
     if usr_unit.should_ring_bell:
         ring(unit_id)
 
-    # notify everyone and track failures
-    # TODO: Run each request in a separate thread
-    failures = [
-        not notify(unit_id, recipient, recipient_type, event_id) for
+    # notify everyone at once
+    all_futures = [
+        notify_with_future(unit_id, recipient, recipient_type, event_id) for
         (recipient, recipient_type) in
-        usr_unit.recipients.items()
+        _get_sorted_recipients(usr_unit.recipients)
     ]
+
+    # Gather all results, as they complete.
+    # True means the notification succeeded. False means it failed.
+    failures = [not f.result() for f in futures.as_completed(all_futures)]
 
     # If all notifications failed, fallback to normal bell, if enabled
     if usr_unit.recipients and all(failures):

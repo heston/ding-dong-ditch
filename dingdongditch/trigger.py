@@ -1,13 +1,15 @@
 import datetime
 import functools
+import time
 import logging
 import signal
-
-import blinker
+import sys
 
 from . import action, events, notifier, system_settings, user_settings
 
 WINDOW = datetime.timedelta(seconds=system_settings.BUZZER_INTERVAL)
+LAST_SEEN_AT_KEY = 'lastSeenAt'
+
 logger = logging.getLogger(__name__)
 
 
@@ -51,39 +53,53 @@ def trigger_unit_2():
 
 
 def get_strike_setting_path(unit_id):
-    return '/{}/strike'.format(unit_id)
+    return '{}/{}/strike'.format(system_settings.USER_SETTINGS_PATH, unit_id)
 
 
-def handle_gate_strike_unit_1(sender, value=None):
+def handle_gate_strike_unit_1(sender, value=None, **kwargs):
     if not value:
         return
     logger.info('Gate strike activated for unit 1')
-    action.UNIT_1.strike.release()
-    user_settings.set_data(get_strike_setting_path(action.UNIT_1.id), 0)
+    action.UNIT_1.strike.release(system_settings.STRIKE_RELEASE_DURATION)
+    user_settings.set_data(get_strike_setting_path(action.UNIT_1.id), 0, root='/')
 
 
-def handle_gate_strike_unit_2(sender, value=None):
+def handle_gate_strike_unit_2(sender, value=None, **kwargs):
     if not value:
         return
     logger.info('Gate strike activated for unit 2')
-    action.UNIT_2.strike.release()
-    user_settings.set_data(get_strike_setting_path(action.UNIT_2.id), 0)
+    action.UNIT_2.strike.release(system_settings.STRIKE_RELEASE_DURATION)
+    user_settings.set_data(get_strike_setting_path(action.UNIT_2.id), 0, root='/')
 
 
+def get_last_updated_path():
+    return '{}/{}'.format(system_settings.SYSTEM_SETTINGS_PATH, LAST_SEEN_AT_KEY)
+
+
+def handle_last_updated(sender, **kwargs):
+    user_settings.set_data(get_last_updated_path(), time.time(), root='/')
+
+
+# Set up UNIT 1
 if action.UNIT_1:
     action.UNIT_1.buzzer.when_held = trigger_unit_1
     action.UNIT_1.buzzer.when_pressed = lambda: logger.debug('Trigger pressed for unit 1')
-    blinker.signal(
+    user_settings.signal(
         get_strike_setting_path(action.UNIT_1.id)
     ).connect(handle_gate_strike_unit_1)
 
 
+# Set up UNIT 2
 if action.UNIT_2:
     action.UNIT_2.buzzer.when_held = trigger_unit_2
     action.UNIT_2.buzzer.when_pressed = lambda: logger.debug('Trigger pressed for unit 2')
-    blinker.signal(
+    user_settings.signal(
         get_strike_setting_path(action.UNIT_2.id)
     ).connect(handle_gate_strike_unit_2)
+
+
+# Set last updated timestamp
+user_settings.signal(system_settings.USER_SETTINGS_PATH).connect(handle_last_updated)
 
 
 def run():
@@ -92,3 +108,4 @@ def run():
         signal.pause()
     except KeyboardInterrupt:
         logger.info('Shutting down')
+        sys.exit(0)

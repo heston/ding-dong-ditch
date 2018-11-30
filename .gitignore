@@ -6,3 +6,5 @@ venv
 node_modules
 .cache
 .firebaserc
+.pytest_cache
+.coverage

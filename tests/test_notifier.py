@@ -229,3 +229,29 @@ def test__notify__recipient_type__unknown(mocker):
     assert log_mock.error.called
     assert not notify_by_phone_mock.called
     assert not notify_by_push_mock.called
+
+
+def test_notify_with_future(mocker):
+    executor_mock = mocker.patch('dingdongditch.notifier.executor')
+
+    notifier.notify_with_future('1234', 'asdf1234=', 2)
+
+    executor_mock.submit.assert_called_with(
+        notifier.notify,
+        '1234',
+        'asdf1234=',
+        2
+    )
+
+
+def test_get_sorted_recipients():
+    recipients = {'a': 1, 'b': 2, 'c': 1, 'd': 2}
+
+    result = notifier._get_sorted_recipients(recipients)
+
+    assert result == [
+        ('b', 2),
+        ('d', 2),
+        ('a', 1),
+        ('c', 1),
+    ]

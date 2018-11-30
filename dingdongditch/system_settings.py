@@ -1,5 +1,6 @@
 from collections import namedtuple
 import logging
+import multiprocessing
 import os
 import sys
 
@@ -17,7 +18,7 @@ LOG_PATH = Env.string('DDD_LOG_PATH', os.path.dirname(__file__))
 LOG_FILE = Env.string('DDD_LOG_FILE', 'ding-dong-ditch.log')
 
 basicConfig_args = dict(
-    format='[%(asctime)s] %(levelname)s %(name)s: %(message)s',
+    format='[%(asctime)s] %(levelname)s %(name)s (%(thread)d): %(message)s',
     level=LOG_LEVEL
 )
 
@@ -63,6 +64,9 @@ BUZZER_HOLD = Env.number('DDD_BUZZER_HOLD', 0.3)
 
 # Whether to always ring the bell, regardless of user setting, when the network is down
 RING_FALLBACK = Env.boolean('DDD_RING_FALLBACK', True)
+
+# The duration the strike should stay open when released, in seconds.
+STRIKE_RELEASE_DURATION = Env.number('DDD_STRIKE_RELEASE_DURATION', 3)
 
 
 ##
@@ -120,6 +124,11 @@ FIREBASE_API_KEY = Env.string('DDD_FIREBASE_API_KEY')
 # Firebase Cloud Messaging Server Key
 FIREBASE_FCM_KEY = Env.string('DDD_FIREBASE_FCM_KEY')
 
+# Root path for user settings in adapter
+USER_SETTINGS_PATH = '/settings'
+
+# Path to system-level settings in adapter
+SYSTEM_SETTINGS_PATH = '/systemSettings'
 
 ##
 ## Unit configuration
@@ -156,3 +165,14 @@ def get_unit_by_id(unit_id):
     elif unit_id == UNIT_2.id:
         return UNIT_2
     return None
+
+
+##
+## Other configuration
+##
+
+# Number of threads to maintain in the notifier threadpool
+NOTIFIER_THREADPOOL_SIZE = Env.number(
+    'DDD_NOTIFIER_THREADPOOL_SIZE',
+    multiprocessing.cpu_count() * 2
+)
