@@ -10,7 +10,7 @@ EVENT_ROOT = 'events'
 
 
 def get_event_id():
-    return uuid.uuid4()
+    return str(uuid.uuid4())
 
 
 def get_event_path(unit_id, event_id):

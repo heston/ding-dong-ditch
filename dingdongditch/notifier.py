@@ -49,7 +49,7 @@ def notify_with_future(unit_id, recipient, recipient_type, event_id=None):
     return executor.submit(notify, unit_id, recipient, recipient_type, event_id)
 
 
-def notify(unit_id, recipient, recipient_type, event_id=None)::
+def notify(unit_id, recipient, recipient_type, event_id=None):
     logger.info('Notifying unit "%s" recipient: %s', unit_id, recipient)
 
     if recipient_type == RecipientType.PHONE:

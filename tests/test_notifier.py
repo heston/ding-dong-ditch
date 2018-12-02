@@ -30,7 +30,7 @@ def test__notify_by_phone__failure(mocker):
     assert result is False
 
 
-def test__notify_by_push__success(mocker):
+def test__notify_by_push__success__no_event_id(mocker):
     service_mock = mocker.patch('dingdongditch.notifier.get_push_service').return_value
     log_mock = mocker.patch('dingdongditch.notifier.logger')
 
@@ -41,6 +41,28 @@ def test__notify_by_push__success(mocker):
         data_message={
             'title': notifier.PUSH_MSG_TITLE,
             'body': notifier.PUSH_MSG_BODY,
+            'event_id': None,
+
+        }
+    )
+    log_mock.info.assert_any_call(
+        'Notifying unit "%s" by push "%s"', '1234', 'asdf1234='
+    )
+
+
+def test__notify_by_push__success__with_event_id(mocker):
+    service_mock = mocker.patch('dingdongditch.notifier.get_push_service').return_value
+    log_mock = mocker.patch('dingdongditch.notifier.logger')
+
+    result = notifier.notify_by_push('1234', 'asdf1234=', 'jkl;')
+
+    service_mock.notify_single_device.assert_called_with(
+        registration_id='asdf1234=',
+        data_message={
+            'title': notifier.PUSH_MSG_TITLE,
+            'body': notifier.PUSH_MSG_BODY,
+            'event_id': 'jkl;',
+
         }
     )
     log_mock.info.assert_any_call(
@@ -124,7 +146,7 @@ def test__notify_recipients__should_call_recipients(mocker, settings):
     notifier.notify_recipients('1234')
 
     assert not log_mock.warning.called
-    notify_mock.assert_called_with('1234', '+14155551001', 1)
+    notify_mock.assert_called_with('1234', '+14155551001', 1, None)
 
 
 def test__notify_recipients__should_push_to_recipients(mocker, settings):
@@ -143,7 +165,26 @@ def test__notify_recipients__should_push_to_recipients(mocker, settings):
     notifier.notify_recipients('1234')
 
     assert not log_mock.warning.called
-    notify_mock.assert_called_with('1234', 'asdf1234=', 2)
+    notify_mock.assert_called_with('1234', 'asdf1234=', 2, None)
+
+
+def test__notify_recipients__should_push_to_recipients__with_event_id(mocker, settings):
+    log_mock = mocker.patch('dingdongditch.notifier.logger')
+    settings(
+        UNIT_1=system_settings.Unit(
+            id='1234', buzzer=None, bell=None, strike=None
+        )
+    )
+    get_unit_by_id_mock = mocker.patch('dingdongditch.user_settings.get_unit_by_id')
+    get_unit_by_id_mock.return_value = user_settings.Unit(
+        should_ring_bell=False, recipients={'asdf1234=': 2}
+    )
+    notify_mock = mocker.patch('dingdongditch.notifier.notify')
+
+    notifier.notify_recipients('1234', 'jkl;')
+
+    assert not log_mock.warning.called
+    notify_mock.assert_called_with('1234', 'asdf1234=', 2, 'jkl;')
 
 
 def test__notify_recipients__no_network__no_fallback(mocker, settings):
@@ -213,7 +254,19 @@ def test__notify__recipient_type__push(mocker):
 
     notifier.notify('1234', 'asdf1234=', 2)
 
-    notify_by_push_mock.assert_called_with('1234', 'asdf1234=')
+    notify_by_push_mock.assert_called_with('1234', 'asdf1234=', None)
+    assert not notify_by_phone_mock.called
+    assert not log_mock.error.called
+
+
+def test__notify__recipient_type__push__with_event_id(mocker):
+    log_mock = mocker.patch('dingdongditch.notifier.logger')
+    notify_by_phone_mock = mocker.patch('dingdongditch.notifier.notify_by_phone')
+    notify_by_push_mock = mocker.patch('dingdongditch.notifier.notify_by_push')
+
+    notifier.notify('1234', 'asdf1234=', 2, 'jkl;')
+
+    notify_by_push_mock.assert_called_with('1234', 'asdf1234=', 'jkl;')
     assert not notify_by_phone_mock.called
     assert not log_mock.error.called
 
@@ -240,7 +293,22 @@ def test_notify_with_future(mocker):
         notifier.notify,
         '1234',
         'asdf1234=',
-        2
+        2,
+        None
+    )
+
+
+def test_notify_with_future__with_event_id(mocker):
+    executor_mock = mocker.patch('dingdongditch.notifier.executor')
+
+    notifier.notify_with_future('1234', 'asdf1234=', 2, 'jkl;')
+
+    executor_mock.submit.assert_called_with(
+        notifier.notify,
+        '1234',
+        'asdf1234=',
+        2,
+        'jkl;'
     )
 
 
