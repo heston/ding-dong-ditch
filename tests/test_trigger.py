@@ -13,24 +13,32 @@ def now(mocker):
     return now
 
 
-def test_trigger_unit_1(mocker):
+@pytest.fixture
+def event_id(mocker):
+    fake_event_id = 'a-b-c-d'
+    event_id_mock = mocker.patch('dingdongditch.events.get_event_id')
+    event_id_mock.return_value = fake_event_id
+    return fake_event_id
+
+
+def test_trigger_unit_1(mocker, event_id):
     unit_1_mock = mocker.patch('dingdongditch.action.UNIT_1')
     unit_1_mock.id = 1
     notify_mock = mocker.patch('dingdongditch.notifier.notify_recipients')
 
     trigger.trigger_unit_1()
 
-    notify_mock.assert_called_with(1)
+    notify_mock.assert_called_with(1, event_id)
 
 
-def test_trigger_unit_2(mocker):
+def test_trigger_unit_2(mocker, event_id):
     unit_2_mock = mocker.patch('dingdongditch.action.UNIT_2')
     unit_2_mock.id = 2
     notify_mock = mocker.patch('dingdongditch.notifier.notify_recipients')
 
     trigger.trigger_unit_2()
 
-    notify_mock.assert_called_with(2)
+    notify_mock.assert_called_with(2, event_id)
 
 
 def test_get_last_updated_path():
