@@ -76,7 +76,10 @@ def get_last_updated_path():
     return '{}/{}'.format(system_settings.SYSTEM_SETTINGS_PATH, LAST_SEEN_AT_KEY)
 
 
-def handle_last_updated(sender, **kwargs):
+def handle_last_updated(sender, value, path):
+    if path.starts_with(system_settings.SYSTEM_SETTINGS_PATH):
+        return
+
     user_settings.set_data(get_last_updated_path(), time.time(), root='/')
 
 
@@ -99,7 +102,7 @@ if action.UNIT_2:
 
 
 # Set last updated timestamp
-user_settings.signal(system_settings.USER_SETTINGS_PATH).connect(handle_last_updated)
+user_settings.signal('/').connect(handle_last_updated)
 
 
 def run():
