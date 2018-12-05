@@ -51,7 +51,7 @@ def test_handle_last_updated(mocker, now):
     mocker.patch('dingdongditch.trigger.get_last_updated_path').return_value = '/foo'
     set_data_mock = mocker.patch('dingdongditch.user_settings.set_data')
 
-    trigger.handle_last_updated(object())
+    trigger.handle_last_updated(object(), value=1, path='/')
 
     set_data_mock.assert_called_with(
         '/foo',

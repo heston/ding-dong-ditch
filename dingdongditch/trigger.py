@@ -56,7 +56,7 @@ def get_strike_setting_path(unit_id):
     return '{}/{}/strike'.format(system_settings.USER_SETTINGS_PATH, unit_id)
 
 
-def handle_gate_strike_unit_1(sender, value=None, **kwargs):
+def handle_gate_strike_unit_1(sender, value=None, path=None):
     if not value:
         return
     logger.info('Gate strike activated for unit 1')
@@ -64,7 +64,7 @@ def handle_gate_strike_unit_1(sender, value=None, **kwargs):
     user_settings.set_data(get_strike_setting_path(action.UNIT_1.id), 0, root='/')
 
 
-def handle_gate_strike_unit_2(sender, value=None, **kwargs):
+def handle_gate_strike_unit_2(sender, value=None, path=None):
     if not value:
         return
     logger.info('Gate strike activated for unit 2')
@@ -76,7 +76,7 @@ def get_last_updated_path():
     return '{}/{}'.format(system_settings.SYSTEM_SETTINGS_PATH, LAST_SEEN_AT_KEY)
 
 
-def handle_last_updated(sender, value, path):
+def handle_last_updated(sender, value=None, path=None):
     if path.starts_with(system_settings.SYSTEM_SETTINGS_PATH):
         return
 
