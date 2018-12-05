@@ -77,7 +77,7 @@ def get_last_updated_path():
 
 
 def handle_last_updated(sender, value=None, path=None):
-    if path.starts_with(system_settings.SYSTEM_SETTINGS_PATH):
+    if path.startswith(system_settings.SYSTEM_SETTINGS_PATH):
         return
 
     user_settings.set_data(get_last_updated_path(), time.time(), root='/')
