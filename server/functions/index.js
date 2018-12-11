@@ -18,4 +18,4 @@ exports.doorbell = functions.https.onRequest(doorbell);
 
 exports.cleanupEvents = functions.database
     .ref(constants.EVENTS_PATH)
-    .onCreate(cleanupEvents);
+    .onWrite(cleanupEvents);
