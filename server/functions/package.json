@@ -2,8 +2,8 @@
   "name": "ding-dong-ditch",
   "description": "Firebase Cloud Functions for Ding Dong Ditch voice interface",
   "dependencies": {
-    "firebase-admin": "^4.1.2",
-    "firebase-functions": "^0.5",
+    "firebase-admin": "^6.3.0",
+    "firebase-functions": "^2.1.0",
     "lodash": "^4.17.4",
     "twilio": "^3.0.0",
     "url-search-params": "^0.8.0"
@@ -17,7 +17,7 @@
   },
   "jest": {
     "modulePaths": [
-        "<rootDir>"
+      "<rootDir>"
     ]
   }
 }
