@@ -36,8 +36,9 @@ def test__notify_by_push__success__no_event_id(mocker):
 
     result = notifier.notify_by_push('1234', 'asdf1234=')
 
-    service_mock.notify_single_device.assert_called_with(
+    service_mock.single_device_data_message.assert_called_with(
         registration_id='asdf1234=',
+        time_to_live=0,
         data_message={
             'title': notifier.PUSH_MSG_TITLE,
             'body': notifier.PUSH_MSG_BODY,
@@ -56,8 +57,9 @@ def test__notify_by_push__success__with_event_id(mocker):
 
     result = notifier.notify_by_push('1234', 'asdf1234=', 'jkl;')
 
-    service_mock.notify_single_device.assert_called_with(
+    service_mock.single_device_data_message.assert_called_with(
         registration_id='asdf1234=',
+        time_to_live=0,
         data_message={
             'title': notifier.PUSH_MSG_TITLE,
             'body': notifier.PUSH_MSG_BODY,
