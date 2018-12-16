@@ -89,8 +89,9 @@ def notify_by_phone(unit_id, number):
 def notify_by_push(unit_id, token, event_id=None):
     logger.info('Notifying unit "%s" by push "%s"', unit_id, token)
     try:
-        response = get_push_service().notify_single_device(
+        response = get_push_service().single_device_data_message(
             registration_id=token,
+            time_to_live=0,  # "now or never"
             data_message={
                 'title': PUSH_MSG_TITLE,
                 'body': PUSH_MSG_BODY,
