@@ -1,4 +1,5 @@
 from concurrent import futures
+from datetime import datetime
 from enum import IntEnum
 from functools import lru_cache
 import logging
@@ -35,7 +36,8 @@ def get_twilio_client(sid=None, token=None):
 
 class RecipientType(IntEnum):
     PHONE = 1
-    PUSH = 2
+    SMS = 2
+    PUSH = 3
 
 
 def get_twiml_url(unit_id):
@@ -43,6 +45,11 @@ def get_twiml_url(unit_id):
         system_settings.FIREBASE_CLOUD_FUNCTION_NOTIFY_URL,
         unit_id
     )
+
+
+def get_sms_body():
+    now = datetime.now().strftime('%c')
+    return 'Ding dong! Your doorbell is ringing.\n\n(Occurred {})'.format(now)
 
 
 def notify_with_future(unit_id, recipient, recipient_type, event_id=None):
@@ -58,19 +65,21 @@ def notify(unit_id, recipient, recipient_type, event_id=None):
     if recipient_type == RecipientType.PUSH:
         return notify_by_push(unit_id, recipient, event_id)
 
-    else:
-        logger.error(
-            'Unknown recipient type "%s" for "%s" in unit "%s"',
-            recipient_type,
-            recipient,
-            unit_id
-        )
-        return False
+    if recipient_type == RecipientType.SMS:
+        return notify_by_sms(unit_id, recipient)
+
+    logger.error(
+        'Unknown recipient type "%s" for "%s" in unit "%s"',
+        recipient_type,
+        recipient,
+        unit_id
+    )
+    return False
 
 
 def notify_by_phone(unit_id, number):
+    logger.info('Notifying unit "%s" by phone "%s"', unit_id, number)
     try:
-        logger.info('Notifying unit "%s" by phone "%s"', unit_id, number)
         call = get_twilio_client().calls.create(
             to=number,
             from_=system_settings.FROM_NUMBER,
@@ -84,6 +93,22 @@ def notify_by_phone(unit_id, number):
     else:
         logger.info('Notified recipient: %s. Sid: %s', number, call.sid)
         return call.sid
+
+
+def notify_by_sms(unit_id, number):
+    logger.info('Notifying unit "%s" by SMS "%s"', unit_id, number)
+    try:
+        msg = get_twilio_client().messages.create(
+            to=number,
+            from_=system_settings.FROM_NUMBER,
+            body=get_sms_body())
+        msg.fetch()
+    except Exception as e:
+        logger.exception('Failed to notify recipient: %s. Error: %s', number, e)
+        return False
+    else:
+        logger.info('Notified recipient: %s. Sid: %s', number, msg.sid)
+        return msg.sid
 
 
 def notify_by_push(unit_id, token, event_id=None):
