@@ -8,6 +8,17 @@ def test_get_sms_body(mocker):
     result = notifier.get_sms_body()
     assert 'Ding dong! Your doorbell is ringing.\n\n(Occurred TIMESTAMP)' == result
 
+def test_parse_phone_number__with_delimiter():
+    number = '+14155551000::p'
+    result = notifier.parse_phone_number(number)
+    assert '+14155551000' == result
+
+
+def test_parse_phone_number__no_delimiter():
+    number = '+14155551000'
+    result = notifier.parse_phone_number(number)
+    assert '+14155551000' == result
+
 
 def test__notify_by_phone__success(mocker):
     client_mock = mocker.patch('dingdongditch.notifier.get_twilio_client').return_value
@@ -278,7 +289,7 @@ def test__notify__recipient_type__phone(mocker):
     notify_by_phone_mock = mocker.patch('dingdongditch.notifier.notify_by_phone')
     notify_by_push_mock = mocker.patch('dingdongditch.notifier.notify_by_push')
 
-    notifier.notify('1234', '+14155551001', notifier.RecipientType.PHONE.value)
+    notifier.notify('1234', '+14155551001::p', notifier.RecipientType.PHONE.value)
 
     notify_by_phone_mock.assert_called_with('1234', '+14155551001')
     assert not log_mock.error.called
@@ -291,7 +302,7 @@ def test__notify__recipient_type__sms(mocker):
     notify_by_sms_mock = mocker.patch('dingdongditch.notifier.notify_by_sms')
     notify_by_push_mock = mocker.patch('dingdongditch.notifier.notify_by_push')
 
-    notifier.notify('1234', '+14155551001', notifier.RecipientType.SMS.value)
+    notifier.notify('1234', '+14155551001::s', notifier.RecipientType.SMS.value)
 
     notify_by_sms_mock.assert_called_with('1234', '+14155551001')
     assert not log_mock.error.called

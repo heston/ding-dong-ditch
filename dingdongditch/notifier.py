@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 
 PUSH_MSG_TITLE = 'Ding Dong'
 PUSH_MSG_BODY = 'Your doorbell is ringing!'
+SMS_TEMPLATE = 'Ding dong! Your doorbell is ringing.\n\n(Occurred {})'
+PHONE_POSTFIX_DELIMITER = '::'
 
 executor = futures.ThreadPoolExecutor(
     max_workers=system_settings.NOTIFIER_THREADPOOL_SIZE
@@ -40,6 +42,11 @@ class RecipientType(IntEnum):
     PUSH = 3
 
 
+def parse_phone_number(phone_string):
+    if phone_string:
+        return phone_string.split(PHONE_POSTFIX_DELIMITER)[0]
+
+
 def get_twiml_url(unit_id):
     return '{}?pin={}'.format(
         system_settings.FIREBASE_CLOUD_FUNCTION_NOTIFY_URL,
@@ -49,7 +56,7 @@ def get_twiml_url(unit_id):
 
 def get_sms_body():
     now = datetime.now().strftime('%c')
-    return 'Ding dong! Your doorbell is ringing.\n\n(Occurred {})'.format(now)
+    return SMS_TEMPLATE.format(now)
 
 
 def notify_with_future(unit_id, recipient, recipient_type, event_id=None):
@@ -60,13 +67,15 @@ def notify(unit_id, recipient, recipient_type, event_id=None):
     logger.info('Notifying unit "%s" recipient: %s', unit_id, recipient)
 
     if recipient_type == RecipientType.PHONE:
-        return notify_by_phone(unit_id, recipient)
+        number = parse_phone_number(recipient)
+        return notify_by_phone(unit_id, number)
 
     if recipient_type == RecipientType.PUSH:
         return notify_by_push(unit_id, recipient, event_id)
 
     if recipient_type == RecipientType.SMS:
-        return notify_by_sms(unit_id, recipient)
+        number = parse_phone_number(recipient)
+        return notify_by_sms(unit_id, number)
 
     logger.error(
         'Unknown recipient type "%s" for "%s" in unit "%s"',
