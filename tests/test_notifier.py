@@ -6,7 +6,8 @@ def test_get_sms_body(mocker):
     datetime_mock.now.return_value.strftime.return_value = 'TIMESTAMP'
 
     result = notifier.get_sms_body()
-    assert 'Ding dong! Your doorbell is ringing.\n\n(Occurred TIMESTAMP)' == result
+    assert 'Ding dong! Your doorbell rang TIMESTAMP' == result
+
 
 def test_parse_phone_number__with_delimiter():
     number = '+14155551000::p'
