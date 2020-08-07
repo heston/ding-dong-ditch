@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 
 PUSH_MSG_TITLE = 'Ding Dong'
 PUSH_MSG_BODY = 'Your doorbell is ringing!'
-SMS_TEMPLATE = 'Ding dong! Your doorbell is ringing.\n\n(Occurred {})'
+SMS_TEMPLATE = 'Ding dong! Your doorbell rang {}'
+SMS_TIME_FORMAT = '%b %d, %I:%M:%S %p'  # Mar 31, 9:45:03 AM
 PHONE_POSTFIX_DELIMITER = '::'
 
 executor = futures.ThreadPoolExecutor(
@@ -55,7 +56,7 @@ def get_twiml_url(unit_id):
 
 
 def get_sms_body():
-    now = datetime.now().strftime('%c')
+    now = datetime.now().strftime(SMS_TIME_FORMAT)
     return SMS_TEMPLATE.format(now)
 
 
