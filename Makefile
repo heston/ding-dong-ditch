@@ -40,6 +40,13 @@ uninstall:
 	sudo rm /lib/systemd/system/dingdongditch.service
 	sudo systemctl daemon-reload
 
+.PHONY: upgrade
+upgrade:
+	git checkout master
+	git pull
+	sudo systemctl restart dingdongditch
+	sudo systemctl status dingdongditch
+
 .PHONY: run
 run:
 	source venv/bin/activate; \
