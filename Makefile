@@ -78,4 +78,4 @@ test_ci: test_server
 lint_ci:
 	flake8 dingdongditch
 	cd server/functions; \
-	npx eslint .
+	npm run lint
