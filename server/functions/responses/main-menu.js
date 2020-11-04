@@ -1,5 +1,6 @@
 const { get } = require('lodash');
 const TwimlResponse = require('./twiml-response');
+const { PHONE_TYPE, SMS_TYPE, unparsePhoneNumber } = require('../lib/phone-number');
 
 module.exports = class MainMenu extends TwimlResponse {
     constructor(baseUrl, settings, from, pin) {
@@ -11,8 +12,18 @@ module.exports = class MainMenu extends TwimlResponse {
 
     getMenuOptions() {
         return {
-            bellEnabled: get(this.settings, 'chime', 0),
-            fromEnabled: get(this.settings, ['recipients', this.from], 0) === 1
+            bellEnabled: get(
+                this.settings,
+                'chime',
+                0),
+            phoneEnabled: get(
+                this.settings,
+                ['recipients', unparsePhoneNumber(this.from, PHONE_TYPE)],
+                0),
+            smsEnabled: get(
+                this.settings,
+                ['recipients', unparsePhoneNumber(this.from, SMS_TYPE)],
+                0)
         };
     }
 
@@ -27,7 +38,7 @@ module.exports = class MainMenu extends TwimlResponse {
             action: this.getUrl('handleAction', {pin: this.pin}),
         });
 
-        if (menuOptions.fromEnabled) {
+        if (menuOptions.phoneEnabled) {
             gather.say(
                 'To disable your phone number, press 1.'
             );
@@ -39,20 +50,32 @@ module.exports = class MainMenu extends TwimlResponse {
 
         gather.pause({length: 1});
 
-        if (menuOptions.bellEnabled) {
+        if (menuOptions.smsEnabled) {
             gather.say(
-                'To disable your doorbell chime, press 2.'
+                'To stop receiving text messages, press 2.'
             );
         } else {
             gather.say(
-                'To enable your doorbell chime, press 2.'
+                'To start receiving text messages, press 2.'
+            );
+        }
+
+        gather.pause({length: 1});
+
+        if (menuOptions.bellEnabled) {
+            gather.say(
+                'To disable your doorbell chime, press 3.'
+            );
+        } else {
+            gather.say(
+                'To enable your doorbell chime, press 3.'
             );
         }
 
         gather.pause({length: 1});
 
         gather.say(
-            'To open the front gate, press 3.'
+            'To open the front gate, press 4.'
         );
 
         return resp;

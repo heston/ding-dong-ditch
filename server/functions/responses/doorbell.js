@@ -16,7 +16,7 @@ module.exports = class Doorbell extends TwimlResponse {
             action: this.getUrl('unlock', {pin: this.pin}),
         });
 
-        times(5, () => {
+        times(3, () => {
             gather.say(
                 'Ding dong! ' +
                 'This is your doorbell calling. Someone is at the door. ' +

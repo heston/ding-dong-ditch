@@ -41,6 +41,7 @@ describe('validatePin', () => {
         snapshot.val.mockImplementation(() => 1);
         return validatePin(1234).then((value) => {
             expect(value).toEqual(1);
+            return 1;
         });
     });
 });

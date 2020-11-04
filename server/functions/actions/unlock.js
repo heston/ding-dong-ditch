@@ -10,15 +10,17 @@ module.exports = function unlock(req, res) {
 
     if (!pin) {
         res.send((new BadRequest()).render())
-        return;
+        return res;
     }
 
-    validatePin(pin).then(() => {
+    return validatePin(pin).then(() => {
         console.log('unlock triggered');
-        triggerStrike(pin).then((ResponseClass) => {
+        return triggerStrike(pin);
+     }).then((ResponseClass) => {
             res.send((new ResponseClass()).render());
-        })
-     }, () => {
+            return res;
+    }, () => {
         res.send((new BadRequest()).render());
+        return res;
     });
 };
