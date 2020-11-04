@@ -13,7 +13,7 @@ module.exports = function mainMenu(req, res) {
 
     console.log('mainMenu', req.query);
 
-    validatePin(pin).then(() => getSettings(pin)).then(
+    return validatePin(pin).then(() => getSettings(pin)).then(
         (snapshot) => {
             const settings = snapshot.val();
             const menu = new MainMenu(
@@ -24,12 +24,14 @@ module.exports = function mainMenu(req, res) {
             );
             console.log('menu', menu.render());
             res.send(menu.render());
+            return res;
         },
         (e) => {
             console.log('mainMenu.error', e);
             // Send error, since pin is missing
             const error = new InvalidPin(getBaseUrl(req));
             res.send(error.render());
+            return res;
         }
     );
 };

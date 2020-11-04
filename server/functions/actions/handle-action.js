@@ -3,6 +3,7 @@ const InvalidOption = require('../responses/invalid-option');
 const Success = require('../responses/success');
 const { getBaseUrl, getFrom } = require('../lib/request-helpers');
 const togglePhone = require('../activities/toggle-phone');
+const toggleSms = require('..activities/toggle-sms');
 const toggleChime = require('../activities/toggle-chime');
 const triggerStrike = require('../activities/trigger-strike');
 
@@ -13,8 +14,9 @@ const triggerStrike = require('../activities/trigger-strike');
  */
 const actions = {
     1: togglePhone,
-    2: toggleChime,
-    3: triggerStrike,
+    2: toggleSms,
+    3: toggleChime,
+    4: triggerStrike,
 };
 
 module.exports = function handleAction(req, res) {
@@ -29,7 +31,7 @@ module.exports = function handleAction(req, res) {
 
     if (!pin) {
         res.send((new BadRequest()).render());
-        return;
+        return res;
     }
 
     if (!action) {
@@ -39,10 +41,10 @@ module.exports = function handleAction(req, res) {
             pin
         );
         res.send(resp.render());
-        return;
+        return res;
     }
 
-    action(pin, from).then(
+    return action(pin, from).then(
         (ResponseClass) => {
             let resp;
             if (ResponseClass) {
@@ -60,7 +62,9 @@ module.exports = function handleAction(req, res) {
             }
             console.log('success', resp.render());
             res.send(resp.render());
+            return res;
         }, () => {
             res.send((new BadRequest()).render())
+            return res;
         });
 };
