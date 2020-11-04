@@ -12,7 +12,7 @@ env:
   # This value was determined empirically by executing the following
   # command inside a Cloudfunction:
   #     console.log('NodeJS version', process.versions.node);
-  - NODE_VERSION="6.9.1"
+  - NODE_VERSION="10.23.0"
 before_install:
   - nvm install $NODE_VERSION
 after_success:

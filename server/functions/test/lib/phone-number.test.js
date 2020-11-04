@@ -41,12 +41,12 @@ describe('unparsePhoneNumber', () => {
 
     test('throws on invalid type', () => {
         expect(() => {
-            unparsePhoneNumber('4155551234', 0);
-        }).toThrow('Unknown recipient type: 0');
+            unparsePhoneNumber('4155551234', 'x');
+        }).toThrow('Unknown recipient type: x');
     });
 
     test('returns key', () => {
         const result = unparsePhoneNumber('4155551234', PHONE_TYPE);
-        expect(result).toMatch('4155551234::1');
+        expect(result).toMatch('4155551234::p');
     });
 });
