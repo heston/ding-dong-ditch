@@ -1,6 +1,6 @@
 const { get } = require('lodash');
 const TwimlResponse = require('./twiml-response');
-const { RECIPIENT_TYPE, unparsePhoneNumber } = require('../lib/phone-number');
+const { PHONE_TYPE, SMS_TYPE, unparsePhoneNumber } = require('../lib/phone-number');
 
 module.exports = class MainMenu extends TwimlResponse {
     constructor(baseUrl, settings, from, pin) {
@@ -18,11 +18,11 @@ module.exports = class MainMenu extends TwimlResponse {
                 0),
             phoneEnabled: get(
                 this.settings,
-                ['recipients', unparsePhoneNumber(this.from, RECIPIENT_TYPE.PHONE)],
+                ['recipients', unparsePhoneNumber(this.from, PHONE_TYPE)],
                 0),
             smsEnabled: get(
                 this.settings,
-                ['recipients', unparsePhoneNumber(this.from, RECIPIENT_TYPE.SMS)],
+                ['recipients', unparsePhoneNumber(this.from, SMS_TYPE)],
                 0)
         };
     }
