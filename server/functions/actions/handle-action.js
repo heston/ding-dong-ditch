@@ -3,7 +3,7 @@ const InvalidOption = require('../responses/invalid-option');
 const Success = require('../responses/success');
 const { getBaseUrl, getFrom } = require('../lib/request-helpers');
 const togglePhone = require('../activities/toggle-phone');
-const toggleSms = require('..activities/toggle-sms');
+const toggleSms = require('../activities/toggle-sms');
 const toggleChime = require('../activities/toggle-chime');
 const triggerStrike = require('../activities/trigger-strike');
 

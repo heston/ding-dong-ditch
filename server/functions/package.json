@@ -22,5 +22,8 @@
     "modulePaths": [
       "<rootDir>"
     ]
+  },
+  "engines": {
+    "node": "8"
   }
 }

@@ -1,7 +1,7 @@
 
 const RECIPIENT_TYPE = {
-    PHONE: 1,
-    SMS: 2,
+    PHONE: 'p',
+    SMS: 's',
 };
 const PHONE_TYPE = 'PHONE';
 const SMS_TYPE = 'SMS';

@@ -10,7 +10,7 @@ module.exports = function toggleSms(pin, from) {
             return setSettings(pin, `recipients/${phoneKey}`, null);
         } else {
             // Enable recipient
-            return setSettings(pin, `recipients/${phoneKey}`, 1);
+            return setSettings(pin, `recipients/${phoneKey}`, 2);
         }
     });
 }
