@@ -77,3 +77,5 @@ test_ci: test_server
 .PHONY: lint_ci
 lint_ci:
 	flake8 dingdongditch
+	cd server/functions; \
+	npx eslint .
