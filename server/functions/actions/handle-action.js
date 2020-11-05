@@ -29,10 +29,6 @@ module.exports = function handleAction(req, res) {
     const option = req.query.Digits;
     const action = actions[option];
 
-    res.set({
-        'Cache-Control': 'no-store',
-    });
-
     if (!pin) {
         res.send((new BadRequest()).render());
         return res;
