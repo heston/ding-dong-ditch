@@ -2,17 +2,17 @@
   "name": "ding-dong-ditch",
   "description": "Firebase Cloud Functions for Ding Dong Ditch voice interface",
   "dependencies": {
-    "firebase-admin": "^6.3.0",
-    "firebase-functions": "^2.1.0",
+    "firebase-admin": "^9.3.0",
+    "firebase-functions": "^3.11.0",
     "lodash": "^4.17.4",
     "twilio": "^3.0.0",
-    "url-search-params": "^0.8.0"
+    "url-search-params": "^1.1.0"
   },
   "private": true,
   "devDependencies": {
     "eslint": "^7.12.1",
     "eslint-plugin-promise": "^4.2.1",
-    "jest": "^20.0.4"
+    "jest": "^26.6.3"
   },
   "scripts": {
     "test": "jest",
