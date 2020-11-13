@@ -1,5 +1,6 @@
 const admin = require('firebase-admin');
 const cleanupEvents = require('./db/cleanup-events');
+const resetStrike = require('./db/reset-strike');
 const constants = require('./constants');
 const doorbell = require('./actions/doorbell');
 const functions = require('firebase-functions');
@@ -20,3 +21,7 @@ exports.doorbell = functions.https.onRequest(doorbell);
 exports.cleanupEvents = functions.database
     .ref(constants.EVENTS_PATH)
     .onWrite(cleanupEvents);
+
+exports.resetStrike = functions.database
+    .ref(constants.LAST_SEEN_AT_PATH)
+    .onWrite(resetStrike);
