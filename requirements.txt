@@ -15,7 +15,7 @@ protobuf==3.6.0
 pyasn1==0.4.4
 pyasn1-modules==0.2.2
 pyfcm==1.4.5
-PyJWT==1.6.4
+PyJWT==2.4.0
 -e git+https://github.com/heston/Pyrebase.git@a77bd6f6def656b1dcd77d938fac2707f3c4ba61#egg=Pyrebase
 PySocks==1.6.8
 pytz==2018.5
