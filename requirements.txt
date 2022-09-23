@@ -11,7 +11,7 @@ google-resumable-media==0.3.1
 googleapis-common-protos==1.5.3
 gpiozero==1.4.1
 idna==2.7
-protobuf==3.6.0
+protobuf==3.18.3
 pyasn1==0.4.4
 pyasn1-modules==0.2.2
 pyfcm==1.4.5
